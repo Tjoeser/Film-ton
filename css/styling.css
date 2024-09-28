@@ -1,0 +1,180 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Header styling */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Main content padding */
+main {
+    padding: 1rem;
+}
+
+/* Form styling */
+form {
+    margin-bottom: 2rem;
+}
+
+/* Movie grid layout (for regular grid layout without scrolling) */
+.movie-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Styling for individual movie cards */
+.movie-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(20% - 1rem); /* Adjust width for 5 items per row */
+    box-sizing: border-box;
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+}
+
+.movie-card:hover {
+    transform: scale(1.05); /* Slightly enlarge the card */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+}
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.movie-title {
+    padding: 0.5rem;
+    font-size: 1rem;
+    text-align: center;
+    background: #fafafa;
+    margin: 0;
+}
+
+/* Scrollable movie list */
+.scrollable-container {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    gap: 1rem;
+    padding: 1rem 0;
+    scroll-snap-type: x mandatory;
+}
+
+.scrollable-container::-webkit-scrollbar {
+    height: 10px; /* Adjust scrollbar height */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+.scrollable-container .movie-card {
+    flex: 0 0 auto; /* Prevent cards from shrinking */
+    width: 200px; /* Fixed width for each card */
+    scroll-snap-align: start; /* Snap cards to the start of the container */
+}
+
+/* Movie details page styles */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.movie-details {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.movie-poster-large {
+    max-width: 50%;
+    border-radius: 10px;
+}
+
+.movie-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-info p {
+    margin-bottom: 15px;
+}
+
+.movie-info strong {
+    font-size: 1.2em;
+}
+
+.movie-info .highlight {
+    font-size: 1.1em;
+    color: #f56b2a;
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f56b2a;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+
+
+.show-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.show-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 200px; /* Adjust as needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.show-poster {
+    width: 100%;
+    height: auto;
+}
+
+.show-title {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.show-overview {
+    font-size: 0.9em;
+    padding: 0 10px;
+}
+
+.show-release-year {
+    font-size: 0.8em;
+    color: #555;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
