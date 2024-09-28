@@ -1,6 +1,6 @@
 <body>
 
-<h1>HOMEPAGE</h1>
+<h1>Home page</h1>
 <h3>Genres</h3>
 <h5>Horror</h5>
 <?php
