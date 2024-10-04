@@ -1,3 +1,3 @@
 <footer>
-    <script src="javascript.js"></script>
+    <script src="misc/javascript.js"></script>
 </footer>

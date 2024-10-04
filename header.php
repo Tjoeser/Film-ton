@@ -9,24 +9,29 @@
 <body>
     <header>
         <h1>Film Ton</h1>
-        <form method="post" action="">
-            <button type="submit" name="home">Home</button>
-            <button type="submit" name="search">Search</button>
+        <form method="post" action="" id="nav-form">
+            <button type="submit" id="home" name="home">Home</button>
+            <button type="submit" id="search" name="search">Search</button>
+            <button type="submit" id="login" name="login">Login</button>
         </form>
     </header>
 
     <?php
     require_once 'functions.php'; // Include the functions file
     require_once 'display.php'; // Include the functions file
+    include 'misc/config.php';
     
+
     if (isset($_POST['home'])) {
-        include 'home.php';
+        include 'pages/home.php';
     } elseif (isset($_POST['search'])) {
-        include 'search.php';
-    } elseif (isset($_GET['imdbId'])) {
-        include 'movie.php';
-    } else {
-        include 'home.php';
+        include 'pages/search.php';
+    } elseif (isset($_GET['tmId'])) {
+        include 'pages/movie.php';
+    } elseif (isset($_POST['login'])) {
+        include 'pages/login.php';
+    }else {
+        include 'pages/home.php';
     }
     ?>
 </body>
