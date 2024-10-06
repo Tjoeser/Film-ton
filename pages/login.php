@@ -1,44 +1,58 @@
 <?php
-session_start();
+$email = '';
+$password = '';
+$country = '';
 
-// Process the form submission if the request method is POST
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Sanitize input
-    $username = htmlspecialchars(trim($_POST['username']));
-    $password = htmlspecialchars(trim($_POST['password']));
+// Check if the user is logged in
+if (isset($_COOKIE['loggedin']) && $_COOKIE['loggedin'] === 'true') {
+    echo "<h1>Welcome!</h1>";
+    header("Location: ?page=account"); // Redirect to the specific page
+} else {
+    // Check if the form is submitted
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $email = isset($_POST['email']) ? $_POST['email'] : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        $country = isset($_POST['country']) ? $_POST['country'] : '';
 
-    // Debug: Check sanitized values
-    echo "Username: $username<br>";
-    echo "Password: $password<br>";
-
-    // Save data if values are not empty
-    if (!empty($username) && !empty($password)) {
-        $data = "[$username][$password]\n";
-        $filePath = 'misc/login_db.txt'; // Ensure this path is correct
-
-        // Attempt to save to the file
-        if (file_put_contents($filePath, $data, FILE_APPEND | LOCK_EX) === false) {
-            echo "Error saving data. Please check file permissions.";
-        } else {
-            echo "Registration successful!";
+        if (isset($_POST['register'])) {
+            registerAccount($email, $password, $country);
+        } elseif (isset($_POST['login'])) {
+            loginAccount($email, $password);
         }
-    } else {
-        echo "Username and password cannot be empty.";
     }
-}
+
 ?>
 
-<body>
-    <div id="page-identifier" data-page="login">
-        <h2>Register</h2>
-        <form id="registration-form" method="POST" action="">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br><br>
-            
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
-            
-            <input type="submit" value="Register">
-        </form>
-    </div>
-</body>
+    <body>
+        <div>
+            <button id="toggle-form" onclick="toggleForm()">Switch to Login</button>
+
+            <div id="form-container">
+                <?php registrationForm(); ?>
+            </div>
+        </div>
+
+        <script>
+            let isLoginFormVisible = false; // Flag to track the visible form
+
+            function toggleForm() {
+                const formContainer = document.getElementById('form-container');
+                const button = document.getElementById('toggle-form');
+
+                if (isLoginFormVisible) {
+                    // If the login form is visible, show the registration form
+                    formContainer.innerHTML = `<?php registrationForm(); ?>`;
+                    button.innerText = 'Switch to Login';
+                } else {
+                    // If the registration form is visible, show the login form
+                    formContainer.innerHTML = `<?php loginForm(); ?>`;
+                    button.innerText = 'Switch to Register';
+                }
+
+                isLoginFormVisible = !isLoginFormVisible; // Toggle the flag
+            }
+        </script>
+    </body>
+<?php
+}
+?>

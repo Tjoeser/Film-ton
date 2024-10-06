@@ -1,65 +1,65 @@
 <body>
 
-    <h1 id="page-identifier" data-page="home">Home page</h1>
+    <h1>Home page</h1>
     <?php
     ?>
     <h3>Genres</h3>
 
-    <h5>Action</h5>
+    <h3>Action</h3>
     <?php getMoviesByGenre(28); ?>
 
-    <h5>Adventure</h5>
+    <h3>Adventure</h3>
     <?php getMoviesByGenre(12); ?>
 
-    <h5>Animation</h5>
+    <h3>Animation</h3>
     <?php getMoviesByGenre(16); ?>
 
-    <h5>Comedy</h5>
+    <h3>Comedy</h3>
     <?php getMoviesByGenre(35); ?>
 
-    <h5>Crime</h5>
+    <h3>Crime</h3>
     <?php getMoviesByGenre(80); ?>
 
-    <h5>Documentary</h5>
+    <h3>Documentary</h3>
     <?php getMoviesByGenre(99); ?>
 
-    <h5>Drama</h5>
+    <h3>Drama</h3>
     <?php getMoviesByGenre(18); ?>
 
-    <h5>Family</h5>
+    <h3>Family</h3>
     <?php getMoviesByGenre(10751); ?>
 
-    <h5>Fantasy</h5>
+    <h3>Fantasy</h3>
     <?php getMoviesByGenre(14); ?>
 
-    <h5>History</h5>
+    <h3>History</h3>
     <?php getMoviesByGenre(36); ?>
 
-    <h5>Horror</h5>
+    <h3>Horror</h3>
     <?php getMoviesByGenre(27); ?>
 
-    <h5>Music</h5>
+    <h3>Music</h3>
     <?php getMoviesByGenre(10402); ?>
 
-    <h5>Mystery</h5>
+    <h3>Mystery</h3>
     <?php getMoviesByGenre(9648); ?>
 
-    <h5>Romance</h5>
+    <h3>Romance</h3>
     <?php getMoviesByGenre(10749); ?>
 
-    <h5>Science Fiction</h5>
+    <h3>Science Fiction</h3>
     <?php getMoviesByGenre(878); ?>
 
-    <h5>TV Movie</h5>
+    <h3>TV Movie</h3>
     <?php getMoviesByGenre(10770); ?>
 
-    <h5>Thriller</h5>
+    <h3>Thriller</h3>
     <?php getMoviesByGenre(53); ?>
 
-    <h5>War</h5>
+    <h3>War</h3>
     <?php getMoviesByGenre(10752); ?>
 
-    <h5>Western</h5>
+    <h3>Western</h3>
     <?php getMoviesByGenre(37); ?>
 
 

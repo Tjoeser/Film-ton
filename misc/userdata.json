@@ -1,0 +1,14 @@
+[
+    {
+        "id": 2,
+        "email": "admin@admin.nl",
+        "password": "adminland",
+        "countryCode": "GB"
+    },
+    {
+        "id": 3,
+        "email": "thijs0302@gmail.com",
+        "password": "Rietveld2005!",
+        "countryCode": "NL"
+    }
+]

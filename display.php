@@ -5,22 +5,26 @@ function searchDisplay($data)
     echo "<div class='movie-grid'>"; // Regular grid layout for search results
 
     foreach ($data['results'] as $movie) {
+        // Skip if poster_path is not available or empty
+        if (empty($movie['poster_path'])) {
+            continue; // Skip this iteration and don't display the movie
+        }
+
         $title = htmlspecialchars($movie['original_title'] ?? 'N/A');
-        $posterPath = !empty($movie['poster_path'])
-        ? "https://image.tmdb.org/t/p/w500" . htmlspecialchars($movie['poster_path'])
-        : 'default-poster.jpg'; // Default image for missing poster
-        $tmId = htmlspecialchars($movie['id'] ?? ''); // Ensure IMDb ID is available
+        $posterPath = "https://image.tmdb.org/t/p/w500" . htmlspecialchars($movie['poster_path']);
+        $movieId = htmlspecialchars($movie['id'] ?? ''); // Ensure TMDb ID is available
 
         echo "<div class='movie-card'>";
-        echo "<a href='?tmId=$tmId'>"; // Use GET parameter to pass movie ID
+        echo "<a href='?movieId=$movieId'>"; // Use GET parameter to pass movie ID
         echo "<img src='$posterPath' alt='Poster' class='movie-poster'>";
-        echo "<h4 class='movie-title'>$title</h4>";
+        echo "<h4 class='movie-card-title'>$title</h4>";
         echo "</a>";
         echo "</div>";
     }
 
     echo "</div>";
 }
+
 
 function scrollableMoviesTMDbDisplay($movies)
 {
@@ -38,11 +42,11 @@ function scrollableMoviesTMDbDisplay($movies)
         $posterPath = !empty($movie['poster_path'])
             ? "https://image.tmdb.org/t/p/w500" . htmlspecialchars($movie['poster_path'])
             : 'default-poster.jpg'; // Default image for missing poster
-        $tmId = htmlspecialchars($movie['id']); // Always present
+        $movieId = htmlspecialchars($movie['id']); // Always present
 
         // Build the movie card
         echo "<div class='movie-card'>";
-        echo "<a href='?tmId=$tmId'>"; // Link to details page
+        echo "<a href='?movieId=$movieId'>"; // Link to details page
         echo "<img src='$posterPath' alt='Poster of $title' class='movie-poster'>";
         echo "<h4 class='movie-title'>$title</h4>";
         echo "</a>";
@@ -119,7 +123,7 @@ function movieDetailsTMBdDisplay($data)
                 <p id="movie-info-release_date"> <?php echo $values['release_date']; ?></p>
                 <p id="movie-info-overview"><strong>Overview:</strong> <?php echo $values['overview']; ?></p>
                 <p id="movie-info-genres"><strong>Genres:</strong> <?php echo $values['genres']; ?></p>
-                <?php echo movieDetailsWithProvidersDisplay($data['id'], "NL"); ?>
+                <?php echo movieProvidersDisplay($data['id'], "NL"); ?>
                 </div>
 
 
@@ -140,7 +144,7 @@ function movieDetailsTMBdDisplay($data)
 
 
 
-function movieDetailsWithProvidersDisplay($movieId, $countryCode)
+function movieProvidersDisplay($movieId, $countryCode)
 {
     // Get watch providers
     $providers = getMovieWatchProviders($movieId, $countryCode);
@@ -157,9 +161,91 @@ function movieDetailsWithProvidersDisplay($movieId, $countryCode)
         }
         echo "</div>"; // Closing wrapper
     } else {
+        echo "<div class='provider-available'>"; // New wrapper for styling
+        echo "<h3>Available on:</h3>";
+        echo "<div class='provider-logos'>"; // New wrapper for styling
         echo "<p>This movie is not available on any streaming service in your country.</p>";
+        echo "</div>"; // Closing wrapper
     }
     echo "</div>"; // Closing wrapper
 
 }
 
+function registrationForm() {
+    echo '<h1>Register</h1>';
+    echo '<form id="registration-form" class="form" method="POST" action="?page=login">';
+    
+    echo '<label for="email">Email:</label>';
+    echo '<input type="text" class="form-input" id="email" name="email" value="" required><br><br>';
+    
+    echo '<label for="password">Password:</label>';
+    echo '<input type="password" class="form-input" id="password" name="password" value="" required><br><br>';
+    
+    echo '<label for="country">Country:</label>';
+    echo '<select name="country" id="country" required>';
+    echo '<option value="AD">Andorra</option>';
+    echo '<option value="AR">Argentina</option>';
+    echo '<option value="AT">Austria</option>';
+    echo '<option value="AU">Australia</option>';
+    echo '<option value="BE">Belgium</option>';
+    echo '<option value="BR">Brazil</option>';
+    echo '<option value="CA">Canada</option>';
+    echo '<option value="CH">Switzerland</option>';
+    echo '<option value="CL">Chile</option>';
+    echo '<option value="CO">Colombia</option>';
+    echo '<option value="CZ">Czech Republic</option>';
+    echo '<option value="DE">Germany</option>';
+    echo '<option value="DK">Denmark</option>';
+    echo '<option value="EE">Estonia</option>';
+    echo '<option value="ES">Spain</option>';
+    echo '<option value="FI">Finland</option>';
+    echo '<option value="FR">France</option>';
+    echo '<option value="GB">United Kingdom</option>';
+    echo '<option value="GR">Greece</option>';
+    echo '<option value="HK">Hong Kong</option>';
+    echo '<option value="HR">Croatia</option>';
+    echo '<option value="HU">Hungary</option>';
+    echo '<option value="IE">Ireland</option>';
+    echo '<option value="IL">Israel</option>';
+    echo '<option value="IN">India</option>';
+    echo '<option value="IT">Italy</option>';
+    echo '<option value="JP">Japan</option>';
+    echo '<option value="KR">South Korea</option>';
+    echo '<option value="LT">Lithuania</option>';
+    echo '<option value="LU">Luxembourg</option>';
+    echo '<option value="LV">Latvia</option>';
+    echo '<option value="MX">Mexico</option>';
+    echo '<option value="MY">Malaysia</option>';
+    echo '<option value="NL">Netherlands</option>';
+    echo '<option value="NO">Norway</option>';
+    echo '<option value="NZ">New Zealand</option>';
+    echo '<option value="PE">Peru</option>';
+    echo '<option value="PH">Philippines</option>';
+    echo '<option value="PL">Poland</option>';
+    echo '<option value="PT">Portugal</option>';
+    echo '<option value="RO">Romania</option>';
+    echo '<option value="RS">Serbia</option>';
+    echo '<option value="RU">Russia</option>';
+    echo '<option value="SE">Sweden</option>';
+    echo '<option value="SG">Singapore</option>';
+    echo '<option value="TH">Thailand</option>';
+    echo '<option value="TR">Turkey</option>';
+    echo '<option value="US">United States</option>';
+    echo '<option value="ZA">South Africa</option>';
+    echo '</select><br><br>';
+    
+    echo '<input type="submit" class="form-button" id="register" name="register" value="Register"><br><br>';
+    echo '</form>';
+}
+
+
+function loginForm() {
+    echo '<h1>Login</h1>';
+    echo '<form id="login-form" class="form" method="POST" action="?page=login">';
+    echo '<label for="email">Email:</label>';
+    echo '<input type="text" class="form-input" id="email" name="email" value="" required><br><br>';
+    echo '<label for="password">Password:</label>';
+    echo '<input type="password" class="form-input" id="password" name="password" value="" required><br><br>';
+    echo '<input type="submit" class="form-button" id="login" name="login" value="Login"><br><br>';
+    echo '</form>';
+}
