@@ -1,5 +1,5 @@
 <?php
-require_once 'display.php'; // Include the functions file
+
 function GetMoviesByTitle($title)
 {
     // TMDb API Key
@@ -28,6 +28,31 @@ function GetMoviesByTitle($title)
     }
 }
 
+function getRandomMovie()
+{
+    $apiKey = '62f2c485f5b675bdef3f30d6df52ea62';
+    $totalPages = 10; // Max number of pages TMDb allows
+    $randomPage = rand(1, $totalPages);
+
+    // Build the URL with the random page
+    $url = "https://api.themoviedb.org/3/discover/movie?api_key={$apiKey}&language=en-US&sort_by=popularity.desc&page={$randomPage}";
+
+    // Fetch the movie data
+    $response = file_get_contents($url);
+    $data = json_decode($response, true);
+
+    // Check if there are results
+    if (isset($data['results']) && !empty($data['results'])) {
+        // Select a random movie from the results
+        $movies = $data['results'];
+        $randomMovie = $movies[array_rand($movies)];
+        scrollableMoviesTMDbDisplay($data);
+        return $randomMovie;
+    }
+
+    return null;
+}
+
 function getMoviesByGenre($genreId, $page = 1)
 {
     $apiKey = apiKey;
@@ -38,6 +63,7 @@ function getMoviesByGenre($genreId, $page = 1)
 
     // Decode the JSON response into an associative array
     $data = json_decode($response, true);
+    // var_dump($data);
 
     if ($response === FALSE) {
         die('Error occurred while fetching movies by genre.');
@@ -45,6 +71,53 @@ function getMoviesByGenre($genreId, $page = 1)
         scrollableMoviesTMDbDisplay($data);
     }
 }
+
+function getMovieById($movieId)
+{
+    // TMDb API Key
+    $apiKey = apiKey; // Replace with your TMDb API key
+
+    // TMDb API URL for fetching a movie by ID
+    $url = "https://api.themoviedb.org/3/movie/{$movieId}?api_key={$apiKey}";
+
+    // Initialize CURL
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    // Execute the request
+    $response = curl_exec($ch);
+
+    // Check for CURL errors
+    if (curl_errno($ch)) {
+        echo 'CURL Error: ' . curl_error($ch);
+        curl_close($ch);
+        return; // Skip this ID if there's a CURL error
+    }
+
+    curl_close($ch);
+
+    // Decode the JSON response into an associative array
+    $movieDetails = json_decode($response, true);
+
+    // Check for errors in the response or if no movie is found
+    if (isset($movieDetails['success']) && $movieDetails['success'] === false) {
+        // Log or handle the error as needed
+        return; // Skip this ID if there's an error
+    }
+
+    // Display the movie details only if valid movie details are returned
+    if (!empty($movieDetails) && isset($movieDetails['id'])) {
+        return $movieDetails;
+    } else {
+        // Skip this ID if no movie found
+        return;
+    }
+
+    return $movieDetails; // Return the movie details (if needed)
+}
+
+
 
 
 
@@ -88,87 +161,25 @@ function getMovieWatchProviders($movieId, $countryCode)
     return isset($data['results'][$countryCode]) ? $data['results'][$countryCode] : [];
 }
 
-function getRandomMovie()
-{
-    $apiKey = '62f2c485f5b675bdef3f30d6df52ea62';
-    $totalPages = 10; // Max number of pages TMDb allows
-    $randomPage = rand(1, $totalPages);
-
-    // Build the URL with the random page
-    $url = "https://api.themoviedb.org/3/discover/movie?api_key={$apiKey}&language=en-US&sort_by=popularity.desc&page={$randomPage}";
-
-    // Fetch the movie data
-    $response = file_get_contents($url);
-    $data = json_decode($response, true);
-
-    // Check if there are results
-    if (isset($data['results']) && !empty($data['results'])) {
-        // Select a random movie from the results
-        $movies = $data['results'];
-        $randomMovie = $movies[array_rand($movies)];
-        scrollableMoviesTMDbDisplay($data);
-        return $randomMovie;
-    }
-
-    return null;
-}
 
 function registerAccount($email, $password, $countryCode)
 {
-    $filePath = './misc/userdata.json';
-    $userData = [];
-    $newUserId = 1; // Start from ID 1
-
-    if (file_exists($filePath)) {
-        $jsonData = file_get_contents($filePath);
-        $userData = json_decode($jsonData, true);
-
-        // Check for the highest existing ID
-        if (!empty($userData)) {
-            $highestId = max(array_column($userData, 'id'));
-            $newUserId = $highestId + 1; // Increment the highest ID by 1
-        }
-    }
-
-    $newUser = [
-        'id' => $newUserId, // Add the new ID
-        'email' => $email,
-        'password' => $password,
-        'countryCode' => $countryCode, // Add the country code
-    ];
-
-    $userData[] = $newUser;
-    file_put_contents($filePath, json_encode($userData, JSON_PRETTY_PRINT));
+    registerAccountDatahandler($email, $password, $countryCode);
 }
 
 
 
 function loginAccount($email, $password)
 {
-    $filePath = './misc/userdata.json';
-
-    if (file_exists($filePath)) {
-        $jsonData = file_get_contents($filePath);
-        $userData = json_decode($jsonData, true);
-
-        foreach ($userData as $user) {
-            // Check for email and password match
-            if ($user['email'] === $email && $user['password'] === $password) {
-                setcookie('user_id', $user['id'], time() + 3600, '/'); // Store user ID
-                setcookie('loggedin', 'true', time() + 3600, '/'); // Indicate user is logged in
-                header("Location: ?page=login"); // Redirect to the specific page
-                exit(); // Exit to ensure no further code is executed
-            }
-        }
+    if (loginAccountDatahandler($email, $password)) {
+        setcookie('loggedin', 'true', time() + 3600, '/'); // Indicate user is logged in
+        header("Location: ?page=login"); // Redirect to the specific page
+        exit(); // Exit to ensure no further code is executed
     }
-    echo "User not found or incorrect password.";
 }
 
 
-function updateAccount()
-{
-
-}
+function updateAccount() {}
 
 function logoutAccount()
 {
@@ -229,4 +240,86 @@ function deleteAccount()
     } else {
         echo "No user is currently logged in.";
     }
+}
+
+
+function pullWatchlist()
+{
+    $data = pullWatchlistDatahandler($_COOKIE['user_id']); // Retrieve watchlist data
+
+    // Initialize an array to hold all movie details
+    $allMovieDetails = [];
+
+    if ($data && is_array($data)) {
+        foreach ($data as $entry) {
+            if (isset($entry['movieid'])) {
+                $movieDetails = getMovieById($entry['movieid']);
+
+                // Check if movie details are not null before adding to the array
+                if ($movieDetails) {
+                    $allMovieDetails[] = $movieDetails; // Add movie details to the array
+                }
+            }
+        }
+
+        // Pass the collected movie details array to searchDisplay
+        if (!empty($allMovieDetails)) {
+            searchDisplay(['results' => $allMovieDetails]); // Assuming searchDisplay expects an array with a 'results' key
+        } else {
+            echo "No movies found in the watchlist.";
+        }
+    } else {
+        echo "No entries found in the watchlist.";
+    }
+}
+
+
+function addToWatchlist()
+{
+    $userId = $_COOKIE['user_id'];
+    $movieId = $_GET['movieId'];
+    addToWatchlistDatahandler($userId, $movieId);
+}
+
+function removeFromWatchlist()
+{
+    $userId = $_COOKIE['user_id'];
+    $movieId = $_GET['movieId'];
+    removeFromWatchlistDatahandler($userId, $movieId);
+}
+
+function isOnWatchlist()
+{
+    $userId = $_COOKIE['user_id'];
+    $movieId = $_GET['movieId'];
+    return isOnWatchlistDatahandler($userId, $movieId);
+}
+
+function getWatchProvidersInCountry()
+{
+    $countryCode = pullSpecificAccountDataDatahandler('countrycode');
+    $apiKey = apiKey; // Replace with your actual API key
+    $url = "https://api.themoviedb.org/3/watch/providers/movie?api_key={$apiKey}&language=en-US&watch_region={$countryCode}";
+
+    // Use file_get_contents to fetch the data
+    $response = file_get_contents($url);
+
+    // Check if the response is valid
+    if ($response === FALSE) {
+        die('Error occurred while fetching watch providers.');
+    }
+
+    // Decode the JSON response into an associative array
+    $data = json_decode($response, true);
+
+    // Collect all providers in the specified country
+    $availableProviders = [];
+
+    if (isset($data['results'])) {
+        foreach ($data['results'] as $provider) {
+            $availableProviders[] = $provider['provider_name'];
+        }
+    }
+
+    return $availableProviders;
 }

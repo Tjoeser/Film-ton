@@ -4,9 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Film Ton: A movie watchlist website that helps you track and find where to stream your favorite films.">
+    <meta name="author" content="Thijs Rietveld">
+    <meta name="keywords" content="movies, watchlist, streaming, Film Ton, cinema, films">
+    
+    <!-- Link to Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap">
+    
+    <!-- Link to your main CSS stylesheet -->
     <link rel="stylesheet" href="css/styling.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="misc/media/favicon/1/favicon.ico" type="image/x-icon">
+
     <title>Film Ton</title>
 </head>
+
 
 <body>
     <header>
@@ -21,6 +34,7 @@
     <?php
     require_once 'functions.php'; // Include the functions file
     require_once 'display.php'; // Include the functions file
+    require_once 'datahandler.php'; // Include the functions file
     include 'misc/config.php';
 
 

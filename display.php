@@ -1,30 +1,46 @@
 <?php
 
-function searchDisplay($data)
+function simpleMovieDisplay($movie)
 {
-    echo "<div class='movie-grid'>"; // Regular grid layout for search results
 
-    foreach ($data['results'] as $movie) {
-        // Skip if poster_path is not available or empty
-        if (empty($movie['poster_path'])) {
-            continue; // Skip this iteration and don't display the movie
-        }
+    $title = htmlspecialchars($movie['original_title'] ?? 'Untitled');
+    $posterPath = !empty($movie['poster_path'])
+        ? "https://image.tmdb.org/t/p/w500" . htmlspecialchars($movie['poster_path'])
+        : 'default-poster.jpg'; // Default image for missing poster
+    $movieId = htmlspecialchars($movie['id']); // Always present
 
-        $title = htmlspecialchars($movie['original_title'] ?? 'N/A');
-        $posterPath = "https://image.tmdb.org/t/p/w500" . htmlspecialchars($movie['poster_path']);
-        $movieId = htmlspecialchars($movie['id'] ?? ''); // Ensure TMDb ID is available
-
-        echo "<div class='movie-card'>";
-        echo "<a href='?movieId=$movieId'>"; // Use GET parameter to pass movie ID
-        echo "<img src='$posterPath' alt='Poster' class='movie-poster'>";
-        echo "<h4 class='movie-card-title'>$title</h4>";
-        echo "</a>";
-        echo "</div>";
-    }
-
+    // Build the movie card
+    echo "<div class='movie-card'>";
+    echo "<a href='?movieId=$movieId'>"; // Link to details page
+    echo "<img src='$posterPath' alt='Poster of $title' class='movie-poster'>";
+    // echo "<h4 class='movie-title'>$title</h4>";
+    echo "</a>";
     echo "</div>";
 }
 
+function searchDisplay($data)
+{
+    // Check if data is not null and contains results
+    if (isset($data['results']) && is_array($data['results']) && count($data['results']) > 0) {
+        echo "<div class='movie-grid'>"; // Regular grid layout for search results
+
+        foreach ($data['results'] as $movie) {
+            // Skip if poster_path is not available or empty
+            if (empty($movie['poster_path'])) {
+                continue; // Skip this iteration and don't display the movie
+            }
+            simpleMovieDisplay($movie); // Call your display function
+        }
+
+        echo "</div>";
+    } else {
+        // Optionally, display a message if no results are found
+        echo "<p>No movies found.</p>";
+    }
+}
+
+
+require_once 'functions.php'; // Adjust the path as necessary
 
 function scrollableMoviesTMDbDisplay($movies)
 {
@@ -37,20 +53,7 @@ function scrollableMoviesTMDbDisplay($movies)
     echo "<div class='scrollable-container'>"; // Wrapper for horizontal scrolling
 
     foreach ($movies['results'] as $movie) {
-        // Extract title, poster path, and ID safely
-        $title = htmlspecialchars($movie['original_title'] ?? 'Untitled');
-        $posterPath = !empty($movie['poster_path'])
-            ? "https://image.tmdb.org/t/p/w500" . htmlspecialchars($movie['poster_path'])
-            : 'default-poster.jpg'; // Default image for missing poster
-        $movieId = htmlspecialchars($movie['id']); // Always present
-
-        // Build the movie card
-        echo "<div class='movie-card'>";
-        echo "<a href='?movieId=$movieId'>"; // Link to details page
-        echo "<img src='$posterPath' alt='Poster of $title' class='movie-poster'>";
-        echo "<h4 class='movie-title'>$title</h4>";
-        echo "</a>";
-        echo "</div>";
+        simpleMovieDisplay($movie);
     }
 
     echo "</div>"; // Close the scrollable container
@@ -113,8 +116,8 @@ function movieDetailsTMBdDisplay($data)
         $values['homepage'] = isset($data['homepage']) ? "<a href='{$data['homepage']}' target='_blank'>Click here</a>" : 'N/A';
         $values['tagline'] = isset($data['tagline']) ? "<span class='highlight'>{$data['tagline']}</span>" : 'N/A';
 
-    ?>
-        <div class="movie-details" >
+?>
+        <div class="movie-details">
             <div class="poster">
                 <?php echo $values['poster_path']; ?>
             </div>
@@ -124,17 +127,17 @@ function movieDetailsTMBdDisplay($data)
                 <p id="movie-info-overview"><strong>Overview:</strong> <?php echo $values['overview']; ?></p>
                 <p id="movie-info-genres"><strong>Genres:</strong> <?php echo $values['genres']; ?></p>
                 <?php echo movieProvidersDisplay($data['id'], "NL"); ?>
-                </div>
+            </div>
 
 
-                <div class="additional-info">
-                    <?php foreach ($fields as $key => $label): ?>
-                        <?php if ($key !== 'poster_path' && $key !== 'title' && $key !== 'overview' && $key !== 'release_date' && $key !== 'genres' && $values[$key] !== 'N/A'): // Skip the main fields and those with 'N/A' 
-                        ?>
-                            <p id="movie-info-<?php echo $key; ?>"><strong><?php echo $label; ?>:</strong> <?php echo $values[$key]; ?></p>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </div>
+            <div class="additional-info">
+                <?php foreach ($fields as $key => $label): ?>
+                    <?php if ($key !== 'poster_path' && $key !== 'title' && $key !== 'overview' && $key !== 'release_date' && $key !== 'genres' && $values[$key] !== 'N/A'): // Skip the main fields and those with 'N/A' 
+                    ?>
+                        <p id="movie-info-<?php echo $key; ?>"><strong><?php echo $label; ?>:</strong> <?php echo $values[$key]; ?></p>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
 <?php
     } else {
@@ -147,40 +150,74 @@ function movieDetailsTMBdDisplay($data)
 function movieProvidersDisplay($movieId, $countryCode)
 {
     // Get watch providers
+    $ownedProviders = ['prime', 'max', 'netflix', 'disney plus']; // Array of owned providers
     $providers = getMovieWatchProviders($movieId, $countryCode);
 
-    // Display the providers
+    $ownedProviderLogos = [];
+    $otherProviderLogos = [];
+
+    // Organize providers into 'owned' and 'other'
     if (!empty($providers['flatrate'])) {
-        echo "<div class='provider-available'>"; // New wrapper for styling
-        echo "<h3>Available on:</h3>";
-        echo "<div class='provider-logos'>"; // New wrapper for styling
         foreach ($providers['flatrate'] as $provider) {
             if (isset($provider['logo_path'])) {
-                echo "<img src='https://image.tmdb.org/t/p/w500{$provider['logo_path']}' alt='{$provider['provider_name']}' class='provider-logo'>";
+                $providerName = strtolower($provider['provider_name']);
+                // Check if the provider is in the ownedProviders array
+                if (in_array($providerName, $ownedProviders)) {
+                    $ownedProviderLogos[] = $provider; // Add to owned providers list
+                } else {
+                    $otherProviderLogos[] = $provider; // Add to other providers list
+                }
             }
         }
-        echo "</div>"; // Closing wrapper
-    } else {
-        echo "<div class='provider-available'>"; // New wrapper for styling
-        echo "<h3>Available on:</h3>";
-        echo "<div class='provider-logos'>"; // New wrapper for styling
-        echo "<p>This movie is not available on any streaming service in your country.</p>";
-        echo "</div>"; // Closing wrapper
     }
-    echo "</div>"; // Closing wrapper
 
+    // Initialize flags for provider availability
+    $noneOwned = true; // Flag for owned providers
+    $noneNotOwned = true; // Flag for other providers
+
+    // Function to display provider logos
+    function displayProviders($providerLogos, $heading, $noneFlag)
+    {
+        if (!empty($providerLogos)) {
+            echo "<div class='provider-available'>";
+            echo "<h3>{$heading}</h3>";
+            echo "<div class='provider-logos'>";
+            foreach ($providerLogos as $provider) {
+                echo "<img src='https://image.tmdb.org/t/p/w500{$provider['logo_path']}' alt='{$provider['provider_name']}' class='provider-logo'>";
+            }
+            echo "</div>"; // Close provider-logos
+            echo "</div>"; // Close provider-available
+            return false; // Set noneFlag to false as providers are available
+        }
+        return $noneFlag; // Return the current state of noneFlag
+    }
+
+    // Display the owned providers
+    $noneOwned = displayProviders($ownedProviderLogos, "Available on your owned streaming services:", $noneOwned);
+
+    // Display the other providers
+    $noneNotOwned = displayProviders($otherProviderLogos, "Other services you do not own:", $noneNotOwned);
+
+    // Final check for streaming service availability
+    if ($noneOwned && $noneNotOwned) {
+        echo "<div class='provider-available'>";
+        echo "<h3>This movie is not available on any streaming services in your country.</h3>";
+        echo "</div>";
+    }
 }
 
-function registrationForm() {
+
+function registrationForm()
+{
     echo '<h1>Register</h1>';
     echo '<form id="registration-form" class="form" method="POST" action="?page=login">';
-    
+
     echo '<label for="email">Email:</label>';
     echo '<input type="text" class="form-input" id="email" name="email" value="" required><br><br>';
-    
+
     echo '<label for="password">Password:</label>';
     echo '<input type="password" class="form-input" id="password" name="password" value="" required><br><br>';
-    
+
     echo '<label for="country">Country:</label>';
     echo '<select name="country" id="country" required>';
     echo '<option value="AD">Andorra</option>';
@@ -233,19 +270,20 @@ function registrationForm() {
     echo '<option value="US">United States</option>';
     echo '<option value="ZA">South Africa</option>';
     echo '</select><br><br>';
-    
+
     echo '<input type="submit" class="form-button" id="register" name="register" value="Register"><br><br>';
     echo '</form>';
 }
 
 
-function loginForm() {
+function loginForm($email, $password)
+{
     echo '<h1>Login</h1>';
     echo '<form id="login-form" class="form" method="POST" action="?page=login">';
     echo '<label for="email">Email:</label>';
-    echo '<input type="text" class="form-input" id="email" name="email" value="" required><br><br>';
+    echo '<input type="text" class="form-input" id="email" name="email" value="' . $email . '" required><br><br>';
     echo '<label for="password">Password:</label>';
-    echo '<input type="password" class="form-input" id="password" name="password" value="" required><br><br>';
+    echo '<input type="password" class="form-input" id="password" name="password" value="' . $password . '" required><br><br>';
     echo '<input type="submit" class="form-button" id="login" name="login" value="Login"><br><br>';
     echo '</form>';
 }

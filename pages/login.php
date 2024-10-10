@@ -24,13 +24,13 @@ if (isset($_COOKIE['loggedin']) && $_COOKIE['loggedin'] === 'true') {
 ?>
 
     <body>
-        <div>
-            <button id="toggle-form" onclick="toggleForm()">Switch to Login</button>
+        <main>
+            <button id="toggle-form" onclick="toggleForm()">Switch to Register</button>
 
             <div id="form-container">
-                <?php registrationForm(); ?>
+                <?php loginForm($email, $password); ?>
             </div>
-        </div>
+        </main>
 
         <script>
             let isLoginFormVisible = false; // Flag to track the visible form
@@ -40,13 +40,13 @@ if (isset($_COOKIE['loggedin']) && $_COOKIE['loggedin'] === 'true') {
                 const button = document.getElementById('toggle-form');
 
                 if (isLoginFormVisible) {
+                    // If the registration form is visible, show the login form
+                    formContainer.innerHTML = `<?php loginForm($email, $password); ?>`;
+                    button.innerText = 'Switch to Register';
+                } else {
                     // If the login form is visible, show the registration form
                     formContainer.innerHTML = `<?php registrationForm(); ?>`;
                     button.innerText = 'Switch to Login';
-                } else {
-                    // If the registration form is visible, show the login form
-                    formContainer.innerHTML = `<?php loginForm(); ?>`;
-                    button.innerText = 'Switch to Register';
                 }
 
                 isLoginFormVisible = !isLoginFormVisible; // Toggle the flag

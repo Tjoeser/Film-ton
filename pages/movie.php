@@ -9,6 +9,15 @@ if (isset($_GET['movieId'])) {
 }
 
 
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST['add_to_watchlist'])) {
+        addToWatchlist(); // Call the addToWatchlist function with the movie ID
+    }
+    if (isset($_POST['remove_from_watchlist'])) {
+        removeFromWatchlist(); // Call the addToWatchlist function with the movie ID
+    }
+}
+
 $fields = [
     'title' => 'Title',
     'release_date' => 'Release Date',
@@ -61,34 +70,64 @@ $values['adult'] = isset($response['adult']) ? ($response['adult'] ? 'Yes' : 'No
 $values['homepage'] = isset($response['homepage']) ? "<a href='{$response['homepage']}' target='_blank'>Click here</a>" : 'N/A';
 $values['tagline'] = isset($response['tagline']) ? "<span class='highlight'>{$response['tagline']}</span>" : 'N/A';
 
-?>
 
+$onWatchlist = isOnWatchlist(); // Call the function and store the boolean result
+?>
 
 <body class="moviedetailbody">
 
-        <div class="movie-details" >
-            <div class="poster">
-                <?php echo $values['poster_path']; ?>
-            </div>
-            <div class="movie-info">
-                <p id="movie-info-title"><strong></strong> <?php echo $values['title']; ?></p>
-                <p id="movie-info-release_date"> <?php echo $values['release_date']; ?></p>
-                <p id="movie-info-tagline"> <?php echo $values['tagline']; ?></p>
-                <p id="movie-info-overview"><strong></strong> <?php echo $values['overview']; ?></p>
-                <p id="movie-info-genres"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
-                <?php echo movieProvidersDisplay($response['id'], "NL"); ?>
-                </div>
-
-
-                <div class="additional-info">
-                    <?php foreach ($fields as $key => $label): ?>
-                        <?php if ($key !== 'poster_path' && $key !== 'title' && $key !== 'overview' && $key !== 'release_date' && $key !== 'genres' && $values[$key] !== 'N/A'): // Skip the main fields and those with 'N/A' 
-                        ?>
-                            <p id="movie-info-<?php echo $key; ?>"><strong><?php echo $label; ?>:</strong> <?php echo $values[$key]; ?></p>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </div>
+    <main class="movie-details">
+        <div class="poster">
+            <?php echo $values['poster_path']; ?>
         </div>
+        <div class="movie-info">
+            <p id="movie-info-title"><strong></strong> <?php echo $values['title']; ?></p>
+            <p id="movie-info-release_date"> <?php echo $values['release_date']; ?></p>
+            <p id="movie-info-tagline"> <?php echo $values['tagline']; ?></p>
+            <p id="movie-info-overview"><strong></strong> <?php echo $values['overview']; ?></p>
+            <p id="movie-info-genres"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
+            <?php echo movieProvidersDisplay($response['id'], "NL");
+            ?>
+        </div>
+
+        <div id="watchlist-form-container">
+            <!-- Forms will be displayed here -->
+        </div>
+
+        <div class="additional-info">
+            <?php foreach ($fields as $key => $label): ?>
+                <?php if ($key !== 'poster_path' && $key !== 'title' && $key !== 'overview' && $key !== 'release_date' && $key !== 'genres' && $values[$key] !== 'N/A'): ?>
+                    <p id="movie-info-<?php echo $key; ?>"><strong><?php echo $label; ?>:</strong> <?php echo $values[$key]; ?></p>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </main>
+
+    <script>
+        // Get the PHP boolean value
+        const isOnWatchlist = <?php echo json_encode($onWatchlist); ?>;
+
+        // Get the container for the forms
+        const formContainer = document.getElementById('watchlist-form-container');
+
+        // Function to display the appropriate form based on watchlist status
+        function displayWatchlistForm() {
+            if (isOnWatchlist) {
+                formContainer.innerHTML = `
+                    <form method="POST" action="">
+                        <button type="submit" name="remove_from_watchlist">Remove from Watchlist</button>
+                    </form>`;
+            } else {
+                formContainer.innerHTML = `
+                    <form method="POST" action="">
+                        <button type="submit" name="add_to_watchlist">Add to Watchlist</button>
+                    </form>`;
+            }
+        }
+
+        // Run the function on page load
+        displayWatchlistForm();
+    </script>
 </body>
 
 </html>

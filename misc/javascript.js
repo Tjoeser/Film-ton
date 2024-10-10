@@ -1,19 +1,3 @@
-// Ensure the DOM is fully loaded before running the script
-document.addEventListener('DOMContentLoaded', (event) => {
-    // Get the button element
-    const randomizerButton = document.getElementById('randomizer-btn');
-
-    // Check if the button exists to avoid errors
-    if (randomizerButton) {
-        // Add an event listener for the button click
-        randomizerButton.addEventListener('click', () => {
-            // Call the movieRandomizer function
-            console.log("yasas")
-            movieRandomizer("1");
-        });
-    }
-});
-
 
 
 
@@ -52,21 +36,3 @@ checkLoginStatus();
 
 // Call the checkLoginStatus function on page load
 window.onload = checkLoginStatus;
-
-
-// Check if the button with ID 'randomizer-btn' exists on the page
-const randomizerButton = document.getElementById('randomizer-btn');
-
-if (randomizerButton) {
-    randomizerButton.addEventListener('click', function () {
-        // Make an AJAX request to call the randomizer
-        fetch('randomizer.php') // Calls the randomizer.php file to trigger the randomizer function
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('random-movie-result').innerHTML = data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    });
-}

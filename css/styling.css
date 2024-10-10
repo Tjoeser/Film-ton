@@ -1,14 +1,14 @@
 :root {
-    --primary-bg: #1c1c1c; /* Dark cinema background */
-    --secondary-bg: #333; /* Slightly lighter background for contrast */
-    --text-black: #000000; /* dark black text */
-    --text-color: #fff; /* Bright white text */
-    --accent-color: #f56b2a; /* Cinematic orange-red for highlights */
-    --subtext-color: #888; /* Subtle gray for less important text */
-    --highlight-color: #d35400; /* Bold, cinematic accent color */
-    --border-color: #555; /* Soft gray for borders */
-    --card-bg: #202020; /* Card background to match the dark theme */
-    --footer-bg: #f56b2a; /* Footer matches accent color */
+    --primary-bg: #121212; /* Very dark background for a cinematic feel */
+    --secondary-bg: #1e1e1e; /* Slightly lighter background for contrast */
+    --text-black: #000000; /* Dark black text */
+    --text-color: #ffffff; /* Bright white text for high contrast */
+    --accent-color: #ff6f20; /* Bright cinematic orange for highlights */
+    --subtext-color: #bbbbbb; /* Soft gray for less important text */
+    --highlight-color: #ff8c1a; /* Lighter shade of orange for highlights */
+    --border-color: #444444; /* Darker gray for borders */
+    --card-bg: #212121; /* Card background to match the dark theme */
+    --footer-bg: #ff6f20; /* Footer matches accent color */
 }
 
 body {
@@ -28,6 +28,7 @@ header {
 
 main {
     padding: 1rem;
+    min-height: 66vh;
 }
 
 .movie-grid {
@@ -44,7 +45,7 @@ main {
     box-sizing: border-box;
     transition: transform 0.3s, box-shadow 0.3s;
     min-width: 200px;
-    margin: 30px;
+    margin: 8px;
 }
 
 .movie-card:hover {
@@ -70,7 +71,6 @@ main {
     display: flex;
     overflow-x: auto;
     white-space: nowrap;
-    padding: 10px;
 }
 
 .scrollable-container::-webkit-scrollbar {
@@ -118,13 +118,11 @@ main {
 
 footer {
     text-align: center;
-    margin-top: 40px;
     padding: 20px;
     background-color: var(--footer-bg);
     color: var(--text-color);
     font-size: 1.2em;
     left: 0;
-    bottom: 0;
 }
 
 .show-container {
@@ -304,5 +302,9 @@ h5, h3, h1, h2, h6, p{
 }
 
 .form-button:hover {
-    background-color: #d45d2f; /* Darker version of accent color on hover */
+    background-color: var(--accent-color); /* Darker version of accent color on hover */
+}
+
+#searchpage{
+    /* height: 66vh; */
 }

@@ -1,7 +1,14 @@
 <body>
+    
 
+<main>
     <h1>Home page</h1>
     <?php
+    // pullSpecificAccountData('password');
+    // var_dump($_SESSION['account_id']);
+    // loginAccount('admin','admin');
+    // echo registerAccountDatahandler('emailtje','passwordtje','nl');
+    // echo isOnWatchlist();
     ?>
     <h3>Genres</h3>
 
@@ -62,5 +69,5 @@
     <h3>Western</h3>
     <?php getMoviesByGenre(37); ?>
 
-
+    </main>
 </body>
