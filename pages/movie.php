@@ -18,46 +18,46 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
+$cast = getMovieCast($movieId);
+
 $fields = [
-    'title' => 'Title',
-    'release_date' => 'Release Date',
-    'runtime' => 'Runtime',
-    'status' => 'Status',
-    'adult' => 'Adult Content',
-    'vote_average' => 'Vote Average',
-    'vote_count' => 'Vote Count',
-    'revenue' => 'Revenue',
-    'budget' => 'Budget',
     'genres' => 'Genres',
-    'popularity' => 'Popularity',
     'production_companies' => 'Production Companies',
     'production_countries' => 'Production Countries',
-    'tagline' => 'Tagline',
-    'overview' => 'Overview',
     'spoken_languages' => 'Spoken Languages',
-    'homepage' => 'Homepage',
     'poster_path' => 'Poster Path',
-    // Removed 'imdb_id' field
-];
+    'origin_country' => 'Origin Country',
 
+    // 'title' => 'Title',
+    // 'release_date' => 'Release Date',
+    // 'runtime' => 'Runtime',
+    // 'status' => 'Status',
+    // 'adult' => 'Adult Content',
+    // 'vote_average' => 'Vote Average',
+    // 'vote_count' => 'Vote Count',
+    // 'revenue' => 'Revenue',
+    // 'budget' => 'Budget',
+    // 'popularity' => 'Popularity',
+    // 'tagline' => 'Tagline',
+    // 'overview' => 'Overview',
+    // 'homepage' => 'Homepage',
+];
 // Initialize values
 $values = [];
 foreach ($fields as $key => $label) {
     if (isset($response[$key])) {
         // Handle specific formatting for arrays
-        if ($key === 'genres' || $key === 'production_companies' || $key === 'production_countries' || $key === 'spoken_languages') {
-            // Convert arrays into readable strings
+        if ($key === 'genres' || $key === 'production_companies' || $key === 'production_countries' || $key === 'spoken_languages' || $key === 'origin_country') {
             $values[$key] = implode(", ", array_map(function ($item) {
                 return isset($item['name']) ? $item['name'] : 'N/A';
             }, $response[$key]));
         } elseif ($key === 'poster_path') {
-            // Format the poster path
             $values[$key] = isset($response[$key]) ? "<img src='https://image.tmdb.org/t/p/w500{$response[$key]}' alt='Poster' class='movie-poster-large'>" : 'N/A';
         } else {
             $values[$key] = $response[$key];
         }
     } else {
-        $values[$key] = 'N/A';
+        $values[$key] = 'N/A'; // Default value if not set
     }
 }
 
@@ -77,38 +77,98 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
 <body class="moviedetailbody">
 
     <main class="movie-details">
-        <div class="poster">
-            <?php echo $values['poster_path']; ?>
-        </div>
         <div class="movie-info">
-            <p id="movie-info-title"><strong></strong> <?php echo $values['title']; ?></p>
-            <p id="movie-info-release_date"> <?php echo $values['release_date']; ?></p>
-            <p id="movie-info-tagline"> <?php echo $values['tagline']; ?></p>
-            <p id="movie-info-overview"><strong></strong> <?php echo $values['overview']; ?></p>
-            <p id="movie-info-genres"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
-            <?php echo movieProvidersDisplay($response['id'], "NL");
+            <div class="poster">
+                <?php echo $values['poster_path']; ?>
+            </div>
+            <div class="movie-details-text">
+                <p id="movie-info-title"><strong></strong> <?php echo $response['title']; ?></p>
+                <p id="movie-info-release_date"> <?php echo $values['release_date']; ?></p>
+                <p id="movie-info-tagline"> <?php echo $values['tagline']; ?></p>
+                <p id="movie-info-overview"><strong></strong> <?php echo $response['overview']; ?></p>
+                <p id="movie-info-p"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
+            </div>
+            <div id="watchlist-form-container">
+                <div id="watchlist-form">
+                </div>
+                <?php echo movieProvidersDisplay($response['id'], pullSpecificAccountDataDatahandler("countrycode")); ?>
+            </div>
+        </div>
+
+        <div class="additional-info-container">
+            <div class="additional-info-left">
+                <h5 class="adinfop">Info</h5>
+                <p id="movie-info-p"><strong>Adult content:<br></strong> <?php echo $values['adult']; ?></p>
+                <p id="movie-info-p"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
+                <?php if ($values['origin_country'] !== 'N/A'): ?>
+                    <p id="movie-info-p"><strong>Original country:<br></strong> <?php echo $values['origin_country']; ?></p>
+                <?php endif; ?>
+                <p id="movie-info-p"><strong>Original language:<br></strong> <?php echo $response['original_language']; ?></p>
+                <p id="movie-info-p"><strong>Status:<br></strong> <?php echo $response['status']; ?></p>
+                <p id="movie-info-p"><strong>Release date:<br></strong> <?php echo $values['release_date']; ?></p>
+
+                <!-- Add any additional info content here -->
+            </div>
+
+            <div class="additional-info-mid">
+                <h5 class="adinfop">Revenue</h5>
+                <p id="movie-info-p"><strong>Budget:<br></strong> <?php echo $values['budget']; ?></p>
+                <p id="movie-info-p"><strong>Total revenue:<br></strong> <?php echo $values['revenue']; ?></p>
+
+                <?php
+                // Calculate the total difference
+                $budgetValue = str_replace(['$', ','], '', $values['budget']); // Remove $ and commas for calculation
+                $revenueValue = str_replace(['$', ','], '', $values['revenue']); // Remove $ and commas for calculation
+                $difference = (float)$revenueValue - (float)$budgetValue; // Calculate the difference
+                ?>
+
+                <p id="movie-info-p"><strong>
+                        <?php
+                        if ($difference < 0) {
+                            echo 'Total Loss:<br>'; // Change title for loss
+                        } else {
+                            echo 'Total Profit:<br>'; // Change title for profit
+                        }
+                        ?>
+                    </strong>
+                    <span style="color: <?php echo $difference < 0 ? 'red' : 'green'; ?>;">
+                        <?php
+                        echo '$' . number_format(abs($difference)); // Show absolute value
+                        ?>
+                    </span>
+                </p>
+
+
+            </div>
+
+            <div class="additional-info-right">
+                <h5 class="adinfop">Review</h5>
+                <p id="movie-info-p"><strong>Vote count:<br></strong> <?php echo $response['vote_count']; ?></p>
+                <p id="movie-info-p"><strong>Vote average:<br></strong> <?php echo $response['vote_average']; ?></p>
+                <p id="movie-info-p"><strong>Film-ton Rating:<br></strong> <?php echo "TBD"; ?></p>
+
+            </div>
+        </div>
+
+        <div class="cast-crew">
+            <p class="adinfop">Cast and credits</p>
+            <?php
+            foreach ($cast as $member) {
+                echo '<a href="https://www.google.com/search?q=' . urlencode(htmlspecialchars($member['name'])) . '" class="actor">' . htmlspecialchars($member['name']) . '</a>' . ' , ';
+                echo '<a href="https://www.google.com/search?q=' . urlencode(htmlspecialchars($member['character'])) . '" class="character">' . htmlspecialchars($member['character']) . '</a>' . ' | ';
+            }
             ?>
         </div>
-
-        <div id="watchlist-form-container">
-            <!-- Forms will be displayed here -->
-        </div>
-
-        <div class="additional-info">
-            <?php foreach ($fields as $key => $label): ?>
-                <?php if ($key !== 'poster_path' && $key !== 'title' && $key !== 'overview' && $key !== 'release_date' && $key !== 'genres' && $values[$key] !== 'N/A'): ?>
-                    <p id="movie-info-<?php echo $key; ?>"><strong><?php echo $label; ?>:</strong> <?php echo $values[$key]; ?></p>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </div>
     </main>
+
+
 
     <script>
         // Get the PHP boolean value
         const isOnWatchlist = <?php echo json_encode($onWatchlist); ?>;
 
         // Get the container for the forms
-        const formContainer = document.getElementById('watchlist-form-container');
+        const formContainer = document.getElementById('watchlist-form');
 
         // Function to display the appropriate form based on watchlist status
         function displayWatchlistForm() {

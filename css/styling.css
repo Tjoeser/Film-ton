@@ -170,7 +170,7 @@ footer {
 }
 
 .provider-logo {
-    max-width: 100px;
+    max-width: 50px;
     height: auto;
 }
 
@@ -181,15 +181,20 @@ footer {
 
 .movie-details {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column; /* Stack rows vertically */
     padding: 20px;
     border: 1px solid var(--border-color);
     background-color: var(--secondary-bg);
     margin-bottom: 20px;
 }
 
+.movie-info {
+    display: flex; /* Flexbox for the first row */
+    margin-bottom: 20px; /* Space between rows */
+}
+
 .poster {
-    flex: 1 1 280px;
+    flex: 1 1 280px; /* Allows the poster to be a fixed size */
     margin-right: 20px;
     text-align: center;
 }
@@ -201,8 +206,54 @@ footer {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.movie-info {
-    flex: 2 1 600px;
+.movie-details-text {
+    flex: 2 1 600px; /* Takes remaining space next to the poster */
+}
+
+#watchlist-form-container {
+    flex: 1; /* Allows the watchlist form to take equal space */
+    margin-left: 20px; /* Margin to separate from movie info */
+}
+
+.additional-info-container {
+    display: flex; /* Flexbox for the second row */
+    justify-content: space-between; /* Even spacing between columns */
+}
+
+.additional-info-left,
+.additional-info-mid,
+.additional-info-right {
+    flex-basis: 30%; /* Each column takes up 30% of the row */
+    margin: 0 10px; /* Horizontal spacing */
+}
+
+.additional-info-left h5,
+.additional-info-mid h5,
+.additional-info-right h5 {
+    font-size: 25px;
+    margin: 10px 0;
+}
+
+.additional-info-left strong,
+.additional-info-mid strong,
+.additional-info-right strong {
+    color: var(--text-color);
+}
+
+.cast-crew {
+    margin-top: 20px; /* Space above the cast and crew section */
+}
+
+.cast-crew p {
+    font-size: 25px; /* Style for the cast and credits */
+    color: var(--text-color);
+    margin: 10px 0;
+}
+
+.cast-crew p{
+    font-size: 25px;
+    color: var(--text-color);
+    margin: 10px 0;
 }
 
 #movie-info-title {
@@ -227,7 +278,7 @@ footer {
     line-height: 1.5;
 }
 
-#movie-info-genres {
+#movie-info-p {
     font-size: 16px;
     margin-bottom: 20px;
 }
@@ -237,20 +288,6 @@ footer {
     font-style: italic;
 }
 
-.additional-info {
-    flex-basis: 100%;
-    margin-top: 20px;
-}
-
-.additional-info p {
-    font-size: 14px;
-    color: var(--text-color);
-    margin: 5px 0;
-}
-
-.additional-info strong {
-    color: var(--text-color);
-}
 
 h5, h3, h1, h2, h6, p{
     color: var(--text-color);
@@ -307,4 +344,75 @@ h5, h3, h1, h2, h6, p{
 
 #searchpage{
     /* height: 66vh; */
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+}
+
+#searchInput {
+    width: 20%;
+    padding: 8px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#resultList {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 150px; /* Limit the height */
+    overflow-y: auto; /* Enable scrolling if there are many results */
+    position: absolute; /* Position below the input */
+    width: calc(100% - 16px); /* Match the width of the input */
+    background-color: white; /* Set a background color for the dropdown */
+    z-index: 10; /* Ensure it appears above other elements */
+    color: black;
+}
+
+#resultList div {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#resultList div:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+}
+
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #ff6f00; /* Orange cinema-like color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #ff8c00; /* Slightly lighter orange for hover effect */
+}
+
+
+.actor {
+    font-weight: bold!important; /* Example styling */
+    color: var(--accent-color) !important;
+}
+
+.character {
+    color: gray; /* Example styling */
+}
+
+.actor,
+.character {
+    display: inline; /* Make the <p> tags display inline */
+    margin: 0; /* Remove default margin */
+}
+
+.adinfop{
+    color: var(--accent-color);
 }

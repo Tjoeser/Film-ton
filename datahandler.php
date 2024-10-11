@@ -349,3 +349,59 @@ function pullSpecificAccountDataDatahandler($dataToPull)
         return null; // Return null if the connection fails
     }
 }
+
+function addStreamingServicesDatahandler($services)
+{
+    if (isset($_COOKIE['user_id'])) {
+        $userId = htmlspecialchars(trim($_COOKIE['user_id'])); // Retrieve and sanitize the cookie value
+    } else {
+        $userId = null; // Handle case where cookie doesn't exist
+    }
+
+    if (!$userId) {
+        echo "User ID not found.";
+        return;
+    }
+
+    $dbh = setupAccountTableConnection();
+
+    if ($dbh) {
+        try {
+            // Retrieve the current streaming services
+            $sql = "SELECT streaming FROM accounts WHERE accountId = :id";
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':id', $userId);
+            $stmt->execute();
+            $currentData = $stmt->fetch(PDO::FETCH_ASSOC)['streaming'];
+
+            // Decode the existing services
+            $currentServices = json_decode($currentData, true) ?: [];
+
+            // Ensure $services is an array
+            if (!is_array($services)) {
+                $services = [$services]; // Wrap single value in an array
+            }
+
+            // Merge with the new services
+            $updatedServices = array_unique(array_merge($currentServices, $services));
+
+            // Encode the merged services back to JSON
+            $servicesJson = json_encode($updatedServices);
+
+            // Update the database with the new merged list
+            $sql = "UPDATE accounts SET streaming = :services WHERE accountId = :id";
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':services', $servicesJson);
+            $stmt->bindParam(':id', $userId);
+            $stmt->execute();
+
+            echo "Streaming services successfully updated!";
+        } catch (PDOException $e) {
+            echo "Error updating streaming services: " . $e->getMessage();
+        }
+    } else {
+        echo "Failed to connect to the database.";
+    }
+}
+
+

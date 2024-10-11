@@ -33,7 +33,7 @@
     <h3>Drama</h3>
     <?php getMoviesByGenre(18); ?>
 
-    <h3>Family</h3>
+    <!-- <h3>Family</h3>
     <?php getMoviesByGenre(10751); ?>
 
     <h3>Fantasy</h3>
@@ -67,7 +67,7 @@
     <?php getMoviesByGenre(10752); ?>
 
     <h3>Western</h3>
-    <?php getMoviesByGenre(37); ?>
+    <?php getMoviesByGenre(37); ?> -->
 
     </main>
 </body>

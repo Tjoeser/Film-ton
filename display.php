@@ -126,7 +126,7 @@ function movieDetailsTMBdDisplay($data)
                 <p id="movie-info-release_date"> <?php echo $values['release_date']; ?></p>
                 <p id="movie-info-overview"><strong>Overview:</strong> <?php echo $values['overview']; ?></p>
                 <p id="movie-info-genres"><strong>Genres:</strong> <?php echo $values['genres']; ?></p>
-                <?php echo movieProvidersDisplay($data['id'], "NL"); ?>
+                <?php echo movieProvidersDisplay($data['id'], pullSpecificAccountDataDatahandler("countrycode")); ?>
             </div>
 
 
@@ -149,8 +149,15 @@ function movieDetailsTMBdDisplay($data)
 
 function movieProvidersDisplay($movieId, $countryCode)
 {
-    // Get watch providers
-    $ownedProviders = ['prime', 'max', 'netflix', 'disney plus']; // Array of owned providers
+    // Get watch providers from the user account (assumed to return a JSON string)
+    $ownedProvidersJson = pullSpecificAccountDataDatahandler('streaming');
+    $ownedProviders = json_decode($ownedProvidersJson, true); // Decode JSON to array
+
+    // Check if decoding was successful and it's an array, if not, initialize as empty
+    if (!is_array($ownedProviders)) {
+        $ownedProviders = [];
+    }
+
     $providers = getMovieWatchProviders($movieId, $countryCode);
 
     $ownedProviderLogos = [];
@@ -180,7 +187,7 @@ function movieProvidersDisplay($movieId, $countryCode)
     {
         if (!empty($providerLogos)) {
             echo "<div class='provider-available'>";
-            echo "<h3>{$heading}</h3>";
+            echo "<h4>{$heading}</h4>";
             echo "<div class='provider-logos'>";
             foreach ($providerLogos as $provider) {
                 echo "<img src='https://image.tmdb.org/t/p/w500{$provider['logo_path']}' alt='{$provider['provider_name']}' class='provider-logo'>";
@@ -201,10 +208,11 @@ function movieProvidersDisplay($movieId, $countryCode)
     // Final check for streaming service availability
     if ($noneOwned && $noneNotOwned) {
         echo "<div class='provider-available'>";
-        echo "<h3>This movie is not available on any streaming services in your country.</h3>";
+        echo "<h4>This movie is not available on any streaming services in your country.</h4>";
         echo "</div>";
     }
 }
+
 
 
 function registrationForm()

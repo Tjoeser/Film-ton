@@ -317,9 +317,41 @@ function getWatchProvidersInCountry()
 
     if (isset($data['results'])) {
         foreach ($data['results'] as $provider) {
-            $availableProviders[] = $provider['provider_name'];
+            // Make provider names lowercase
+            $availableProviders[] = strtolower($provider['provider_name']);
         }
     }
 
     return $availableProviders;
+}
+
+function addStreamingServices($services){
+    addStreamingServicesDatahandler($services);
+}
+
+function getMovieCast($movieId)
+{
+    // Debug: Check the received movie ID
+    $apiKey = apiKey; // Make sure to replace this with your actual API key
+    $url = "https://api.themoviedb.org/3/movie/{$movieId}/credits?api_key={$apiKey}&language=en-US";
+
+    // Use file_get_contents to fetch the data
+    $response = file_get_contents($url);
+
+    // Check if the response is valid
+    if ($response === FALSE) {
+        die('Error occurred while fetching movie credits.');
+    }
+
+    // Decode the JSON response into an associative array
+    $data = json_decode($response, true);
+
+
+    // Check if 'cast' key exists within 'credits'
+    if (isset($data['cast'])) {
+        return $data['cast']; // Return the cast information
+    } else {
+        echo "No cast information found.";
+        return []; // Return an empty array if no cast information is found
+    }
 }
