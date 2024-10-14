@@ -1,5 +1,6 @@
 <?php
 
+
 function simpleMovieDisplay($movie)
 {
 
@@ -149,6 +150,15 @@ function movieDetailsTMBdDisplay($data)
 
 function movieProvidersDisplay($movieId, $countryCode)
 {
+    // Check if the user is logged in
+    if (!isUserLoggedIn()) {
+        // Display a message prompting the user to log in
+        echo "<div class='login-message'>";
+        echo "<h4>Please <a href='?page=login'>log in</a> to see available streaming services or to add this movie to your watchlist.</h4>";
+        echo "</div>";
+        return; // Exit the function if not logged in
+    }
+
     // Get watch providers from the user account (assumed to return a JSON string)
     $ownedProvidersJson = pullSpecificAccountDataDatahandler('streaming');
     $ownedProviders = json_decode($ownedProvidersJson, true); // Decode JSON to array
@@ -212,6 +222,7 @@ function movieProvidersDisplay($movieId, $countryCode)
         echo "</div>";
     }
 }
+
 
 
 

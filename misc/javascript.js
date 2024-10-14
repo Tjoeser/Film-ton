@@ -32,7 +32,5 @@ function checkLoginStatus() {
 }
 
 // Call the function to check login status when the page loads
-checkLoginStatus();
 
 // Call the checkLoginStatus function on page load
-window.onload = checkLoginStatus;

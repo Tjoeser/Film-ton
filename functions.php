@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 
 function GetMoviesByTitle($title)
 {
@@ -290,9 +292,14 @@ function removeFromWatchlist()
 
 function isOnWatchlist()
 {
-    $userId = $_COOKIE['user_id'];
-    $movieId = $_GET['movieId'];
-    return isOnWatchlistDatahandler($userId, $movieId);
+    if (isset($_COOKIE['user_id'])) {
+        $userId = $_COOKIE['user_id'];
+        $movieId = $_GET['movieId'];
+        return isOnWatchlistDatahandler($userId, $movieId);
+    } else {
+        // Handle case when user_id is not set
+        return false; // Or some other logic to handle this case
+    }
 }
 
 function getWatchProvidersInCountry()
@@ -354,4 +361,8 @@ function getMovieCast($movieId)
         echo "No cast information found.";
         return []; // Return an empty array if no cast information is found
     }
+}
+
+function isUserLoggedIn() {
+    return isset($_COOKIE['loggedin']); // or the session variable you use
 }

@@ -1,12 +1,3 @@
-<?php
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['search'])) {
-        $search = htmlspecialchars(trim($_POST['search']));
-    }
-}
-?>
-
 <body>
     <main id="searchpage">
         <form id="search-form" method="post" data-dashlane-rid="3436c57f04d655fc">
@@ -14,14 +5,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" data-dashlane-label="true" data-dashlane-rid="79914a06e655a776">Submit</button>
         </form>
 
-        <p>No results found. Try another search or use the randomizer below.</p>
+        <?php
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['search'])) {
+                $search = htmlspecialchars(trim($_POST['search']));
+                GetMoviesByTitle($search);
+            }
+        }
+        ?>
+
 
         <form method="post"> <!-- Remove action attribute to submit to the same script -->
             <input type="hidden" name="action" value="randomize"> <!-- Indicate action -->
             <button type="submit" id="randomizer-btn">Or try the randomizer</button>
         </form>
 
-        <div id="random-movie-result"><?php getRandomMovie();?></div>
+        <div id="random-movie-result"><?php getRandomMovie(); ?></div>
     </main>
 
 </body>

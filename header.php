@@ -67,3 +67,9 @@
 </body>
 
 </html>
+
+<script src="misc/javascript.js"></script>
+
+<script>
+window.onload = checkLoginStatus();
+</script>

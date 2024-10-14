@@ -1,5 +1,6 @@
 <?php
 
+
 function setupDatahandlerConnection()
 {
     $host = "localhost";
@@ -309,16 +310,25 @@ function pullSpecificAccountDataDatahandler($dataToPull)
     }
     $data = "";
 
-    if ($dataToPull == "id") {
-        $data = "accountId";
-    } elseif ($dataToPull == "email") {
-        $data = "email";
-    } elseif ($dataToPull == "password") {
-        $data = "password";
-    } elseif ($dataToPull == "countrycode") {
-        $data = "countrycode";
-    } elseif ($dataToPull == "streaming") {
-        $data = "streaming";
+    // Set the column to pull based on the dataToPull parameter
+    switch ($dataToPull) {
+        case "id":
+            $data = "accountId";
+            break;
+        case "email":
+            $data = "email";
+            break;
+        case "password":
+            $data = "password";
+            break;
+        case "countrycode":
+            $data = "countrycode";
+            break;
+        case "streaming":
+            $data = "streaming";
+            break;
+        default:
+            return null; // Handle invalid dataToPull input
     }
 
     // Establish a connection to the database
@@ -326,7 +336,7 @@ function pullSpecificAccountDataDatahandler($dataToPull)
 
     if ($dbh) {
         try {
-            // Prepare the SQL query to select the account based on email and password
+            // Prepare the SQL query to select the account based on userId
             $sql = "SELECT $data FROM accounts WHERE accountId = :id";
             $stmt = $dbh->prepare($sql);
 
@@ -338,10 +348,16 @@ function pullSpecificAccountDataDatahandler($dataToPull)
 
             // Fetch the account data
             $res = $stmt->fetch(PDO::FETCH_ASSOC);
-            $resstring = $res[$data];
-            return $resstring;
+
+            // Check if $res is false before accessing the array
+            if ($res && isset($res[$data])) {
+                return $res[$data];
+            } else {
+                // Handle case where no account is found
+                return null;
+            }
         } catch (PDOException $e) {
-            echo "Error logging in: " . $e->getMessage();
+            echo "Error fetching account data: " . $e->getMessage();
             return null; // Return null on error
         }
     } else {
@@ -349,6 +365,7 @@ function pullSpecificAccountDataDatahandler($dataToPull)
         return null; // Return null if the connection fails
     }
 }
+
 
 function addStreamingServicesDatahandler($services)
 {
@@ -367,28 +384,15 @@ function addStreamingServicesDatahandler($services)
 
     if ($dbh) {
         try {
-            // Retrieve the current streaming services
-            $sql = "SELECT streaming FROM accounts WHERE accountId = :id";
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindParam(':id', $userId);
-            $stmt->execute();
-            $currentData = $stmt->fetch(PDO::FETCH_ASSOC)['streaming'];
-
-            // Decode the existing services
-            $currentServices = json_decode($currentData, true) ?: [];
-
             // Ensure $services is an array
             if (!is_array($services)) {
                 $services = [$services]; // Wrap single value in an array
             }
 
-            // Merge with the new services
-            $updatedServices = array_unique(array_merge($currentServices, $services));
+            // Encode the new services to JSON
+            $servicesJson = json_encode($services);
 
-            // Encode the merged services back to JSON
-            $servicesJson = json_encode($updatedServices);
-
-            // Update the database with the new merged list
+            // Update the database with the new services list (overriding the existing ones)
             $sql = "UPDATE accounts SET streaming = :services WHERE accountId = :id";
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':services', $servicesJson);

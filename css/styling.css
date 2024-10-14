@@ -416,3 +416,7 @@ button:hover {
 .adinfop{
     color: var(--accent-color);
 }
+
+a{
+    color: var(--text-color);
+}

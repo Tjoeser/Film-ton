@@ -186,7 +186,13 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
         }
 
         // Run the function on page load
-        displayWatchlistForm();
+        // Get the PHP boolean value of isUserLoggedIn
+        const isUserLoggedIn = <?php echo json_encode(isUserLoggedIn()); ?>;
+
+        // Run the function on page load if the user is logged in
+        if (isUserLoggedIn) {
+            displayWatchlistForm();
+        }
     </script>
 </body>
 
