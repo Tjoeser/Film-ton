@@ -89,42 +89,72 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
 
                     <div class="additional-info-mid">
                         <h5 class="adinfop">Revenue</h5>
-                        <p id="movie-info-p"><strong>Budget:<br></strong> <?php echo $values['budget']; ?></p>
-                        <p id="movie-info-p"><strong>Total revenue:<br></strong> <?php echo $values['revenue']; ?></p>
+                        <p id="movie-info-p"><strong>Budget:<br></strong>
+                            <?php
+
+                            // Check if budget is empty, '0', or 0 and display 'N/A' if true
+                            echo (!isset($values['budget']) || $values['budget'] === '' || $values['budget'] === '$0' || $values['budget'] === 0) ? 'N/A' : $values['budget'];
+                            ?>
+                        </p>
+                        <p id="movie-info-p"><strong>Total revenue:<br></strong>
+                            <?php
+                            // Check if total revenue is empty, '0', or 0 and display 'N/A' if true
+                            echo (!isset($values['revenue']) || $values['revenue'] === '' || $values['revenue'] === '$0' || $values['revenue'] === 0) ? 'N/A' : $values['revenue'];
+                            ?>
+                        </p>
+
 
                         <?php
                         // Calculate the total difference
                         $budgetValue = str_replace(['$', ','], '', $values['budget']); // Remove $ and commas for calculation
                         $revenueValue = str_replace(['$', ','], '', $values['revenue']); // Remove $ and commas for calculation
-                        $difference = (float)$revenueValue - (float)$budgetValue; // Calculate the difference
+
+                        // Default to N/A if either budget or revenue is zero
+                        if ($budgetValue == 0 || $revenueValue == 0) {
+                            $difference = null; // Set difference to null
+                        } else {
+                            $difference = (float)$revenueValue - (float)$budgetValue; // Calculate the difference
+                        }
                         ?>
 
                         <p id="movie-info-p"><strong>
                                 <?php
-                                if ($difference < 0) {
+                                if ($difference === null) {
+                                    echo 'Total Profit:<br>'; // Change title for loss
+                                } else if ($difference < 0) {
                                     echo 'Total Loss:<br>'; // Change title for loss
                                 } else {
                                     echo 'Total Profit:<br>'; // Change title for profit
                                 }
                                 ?>
                             </strong>
-                            <span style="color: <?php echo $difference < 0 ? 'red' : 'green'; ?>;">
+                            <span style="color: <?php echo $difference === null ? 'white' : ($difference < 0 ? 'red' : 'green'); ?>;">
                                 <?php
-                                echo '$' . number_format(abs($difference)); // Show absolute value
+                                if ($difference === null) {
+                                    echo 'N/A'; // Display N/A if difference is null
+                                } else {
+                                    echo '$' . number_format(abs($difference)); // Show absolute value
+                                }
                                 ?>
                             </span>
                         </p>
-
-
                     </div>
 
                     <div class="additional-info-right">
                         <h5 class="adinfop">Review</h5>
-                        <p id="movie-info-p"><strong>Vote count:<br></strong> <?php echo $response['vote_count']; ?></p>
-                        <p id="movie-info-p"><strong>Vote average:<br></strong> <?php echo $response['vote_average']; ?></p>
+                        <p id="movie-info-p"><strong>Vote count:<br></strong>
+                            <?php
+                            echo (!empty($response['vote_count']) && $response['vote_count'] != 0) ? $response['vote_count'] : 'N/A'; // Display N/A if vote count is 0 or empty
+                            ?>
+                        </p>
+                        <p id="movie-info-p"><strong>Vote average:<br></strong>
+                            <?php
+                            echo (!empty($response['vote_average']) && $response['vote_average'] != 0) ? $response['vote_average'] : 'N/A'; // Display N/A if vote average is 0 or empty
+                            ?>
+                        </p>
                         <p id="movie-info-p"><strong>Film-ton Rating:<br></strong> <?php echo "TBD"; ?></p>
-
                     </div>
+
                 </div>
             </div>
             <div id="watchlist-form-container">
@@ -137,6 +167,13 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
 
 
         <div class="cast-crew">
+            <?php
+            // Extract the year from the release date
+            $year = date("Y", strtotime($values['release_date']));
+            $movieTitle = htmlspecialchars($response['title']);
+            $searchQuery = urlencode("{$movieTitle} {$year}");
+            ?>
+            <a href="https://www.google.com/search?q=<?php echo $searchQuery; ?>" target="_blank">google search this movie</a>
             <p class="adinfop">Cast and credits</p>
             <?php
             foreach ($cast as $member) {
@@ -145,6 +182,7 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
             }
             ?>
         </div>
+
     </main>
 
 

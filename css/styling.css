@@ -341,9 +341,148 @@ h5, h3, h1, h2, h6, p{
     background-color: var(--accent-color); /* Darker version of accent color on hover */
 }
 
-#searchpage{
-    /* height: 66vh; */
+#search-page {
+    text-align: center;
+    padding: 20px;
 }
+
+#movie-title-input {
+    padding: 10px;
+    width: 300px; /* Adjust width if necessary */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s; /* Smooth transition */
+}
+
+#movie-title-input:focus {
+    border-color: #ff5722; /* Change border color on focus */
+}
+
+#search-page {
+    text-align: center;
+    padding: 20px;
+    position: relative; /* Position relative for absolute children */
+}
+
+#movie-title-input {
+    padding: 10px;
+    width: 300px; /* Adjust width if necessary */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s; /* Smooth transition */
+}
+
+#movie-title-input:focus {
+    border-color: #ff5722; /* Change border color on focus */
+}
+
+#movie-search-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#movie-search-form input{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    background-color: var(--border-color);
+    color: var(--text-color);
+}
+
+#movie-title-input,
+#actor-input,
+#genre-dropdown{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    background-color: var(--border-color);
+    color: var(--text-color);
+}
+#year-input{
+
+}
+
+#search-submit-btn {
+    padding: 10px 15px;
+    background-color: #ff5722; /* Custom color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#search-submit-btn:hover {
+    background-color: #e64a19; /* Darker shade on hover */
+}
+
+#randomizer-form {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#randomizer-submit-btn {
+    padding: 10px 15px;
+    background-color: #00796b; /* Custom color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#randomizer-submit-btn:hover {
+    background-color: #004d40; /* Darker shade on hover */
+}
+
+#random-movie-display {
+    margin-top: 20px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+/* Styles for the suggestions dropdown */
+#suggestions-box,
+#actor-suggestions-box {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 400px;
+    display: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 10px;
+    font-size: 1em;
+    color: #000; /* Black text for suggestions */
+    cursor: pointer;
+    border-bottom: 1px solid #ddd; /* Subtle border between items */
+    text-align: left;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+}
+
+.suggestion-item:last-child {
+    border-bottom: none; /* Remove border for the last item */
+}
+
+.hidden {
+    display: none; /* Hide by default */
+}
+
 
 fieldset {
     border: 1px solid #ccc;
@@ -352,13 +491,6 @@ fieldset {
     position: relative;
 }
 
-#searchInput {
-    width: 20%;
-    padding: 8px;
-    margin-bottom: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
 
 #resultList {
     border: 1px solid #ccc;
@@ -382,7 +514,6 @@ fieldset {
 }
 
 button {
-    margin-top: 10px;
     padding: 5px 10px;
     background-color: #ff6f00; /* Orange cinema-like color */
     color: white;

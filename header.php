@@ -48,7 +48,6 @@ define('LIVE_MODE', $live);
     require_once 'functions.php'; // Include the functions file
     require_once 'display.php'; // Include the functions file
     require_once 'datahandler.php'; // Include the functions file
-    include 'misc/config.php'; // Include the config file
 
 
 

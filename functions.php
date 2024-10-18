@@ -1,12 +1,11 @@
 <?php
+require 'misc/config.php'; // or include 'config.php';
 session_start();
 
 
 function GetMoviesByTitle($title)
 {
-    // TMDb API Key
     $apiKey = apiKey;
-    // Movie or TV Show to search
     $query = urlencode($title);
 
     // TMDb API URL for searching a movie
@@ -32,7 +31,7 @@ function GetMoviesByTitle($title)
 
 function getRandomMovie()
 {
-    $apiKey = '62f2c485f5b675bdef3f30d6df52ea62';
+    $apiKey = apiKey;
     $totalPages = 10; // Max number of pages TMDb allows
     $randomPage = rand(1, $totalPages);
 
@@ -55,7 +54,7 @@ function getRandomMovie()
     return null;
 }
 
-function getMoviesByGenre($genreId, $page = 1)
+function getMoviesByGenre($genreId, $home, $page = 1)
 {
     $apiKey = apiKey;
     $url = "https://api.themoviedb.org/3/discover/movie?api_key={$apiKey}&language=en-US&sort_by=popularity.desc&with_genres={$genreId}&page={$page}";
@@ -63,16 +62,22 @@ function getMoviesByGenre($genreId, $page = 1)
     // Use file_get_contents to fetch the data
     $response = file_get_contents($url);
 
-    // Decode the JSON response into an associative array
-    $data = json_decode($response, true);
-    // var_dump($data);
-
+    // Check for errors
     if ($response === FALSE) {
         die('Error occurred while fetching movies by genre.');
-    } else {
+    }
+
+    // Decode the JSON response into an associative array
+    $data = json_decode($response, true);
+
+    // Depending on the home parameter, call different display functions
+    if ($home) {
         scrollableMoviesTMDbDisplay($data);
+    } else {
+        searchDisplay($data);
     }
 }
+
 
 function getMovieById($movieId)
 {
@@ -206,7 +211,7 @@ function registerAccount($email, $password, $countryCode)
 function loginAccount($email, $password)
 {
     if (loginAccountDatahandler($email, $password)) {
-        setcookie('loggedin', 'true', time() + 3600, '/'); // Indicate user is logged in
+        setcookie('loggedin', 'true', time() + (30 * 24 * 60 * 60), '/'); // Indicate user is logged in for 30 days
         header("Location: ?page=login"); // Redirect to the specific page
         exit(); // Exit to ensure no further code is executed
     }
@@ -335,7 +340,8 @@ function isOnWatchlist()
 }
 
 
-function addStreamingServices($services){
+function addStreamingServices($services)
+{
     addStreamingServicesDatahandler($services);
 }
 
@@ -366,11 +372,13 @@ function getMovieCast($movieId)
     }
 }
 
-function isUserLoggedIn() {
+function isUserLoggedIn()
+{
     return isset($_COOKIE['loggedin']); // or the session variable you use
 }
 
-function getActorFullDetails($actorId) {
+function getActorFullDetails($actorId)
+{
     // Your TMDb API key
     $apiKey = apiKey;
 
@@ -379,7 +387,8 @@ function getActorFullDetails($actorId) {
     $movieCreditsUrl = "https://api.themoviedb.org/3/person/{$actorId}/movie_credits?api_key={$apiKey}&language=en-US";
 
     // Function to fetch data from the API
-    function fetchData($url) {
+    function fetchData($url)
+    {
         $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
@@ -408,4 +417,109 @@ function getActorFullDetails($actorId) {
     } else {
         return "Error: Unable to fetch actor details";
     }
+}
+
+// Ensure the constant is defined before any function calls
+
+function GetMovieSuggestions($query)
+{
+    $apiKey = apiKey; // Use the constant
+    $apiUrl = "https://api.themoviedb.org/3/search/movie?api_key=$apiKey&query=" . urlencode($query) . "&sort_by=popularity.desc";
+
+    // Initialize cURL
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $apiUrl);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    // Execute cURL and get the response
+    $response = curl_exec($curl);
+
+    // Check if cURL execution was successful
+    if (curl_errno($curl)) {
+        error_log('cURL error: ' . curl_error($curl));
+        curl_close($curl);
+        return ['error' => 'API request failed'];
+    }
+
+    curl_close($curl);
+
+    // Decode the JSON response
+    $data = json_decode($response, true);
+
+    // Handle cases where the response is not valid JSON
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log('JSON error: ' . json_last_error_msg());
+        error_log('API response: ' . $response); // Log the response to check for HTML errors
+        return ['error' => 'Invalid JSON response'];
+    }
+
+    // Extract unique movie titles from the response
+    $suggestions = [];
+    $uniqueTitles = []; // Array to track unique titles
+    if (isset($data['results'])) {
+        foreach ($data['results'] as $movie) {
+            $title = $movie['title'];
+            if (!in_array($title, $uniqueTitles)) { // Check for uniqueness
+                $uniqueTitles[] = $title; // Add to unique titles
+                $suggestions[] = [
+                    'title' => $title,
+                    'release_date' => $movie['release_date'] ?? 'N/A', // Include release date if available
+                    'popularity' => $movie['popularity'] ?? 0 // Include popularity if available
+                ];
+            }
+        }
+    }
+
+    return $suggestions;
+}
+
+function getActorIdByName($actorName)
+{
+    $apiKey = apiKey; // Replace with your TMDB API key
+    $actorName = urlencode($actorName); // Encode the actor's name for the URL
+    $url = "https://api.themoviedb.org/3/search/person?api_key={$apiKey}&query={$actorName}";
+
+    // Make the API request
+    $response = file_get_contents($url);
+    $data = json_decode($response, true);
+
+    // Check if results were found
+    if (!empty($data['results'])) {
+        // Return the first result's ID
+        return $data['results'][0]['id']; // Return the TMDB actor ID
+    } else {
+        return null; // No actor found
+    }
+}
+
+function getActorSuggestions($query)
+{
+    // Replace with your actual TMDB API key
+    $apiKey = apiKey;
+    $url = "https://api.themoviedb.org/3/search/person?api_key={$apiKey}&query=" . urlencode($query);
+
+    $response = file_get_contents($url);
+    if ($response === FALSE) {
+        return []; // Return an empty array if the request fails
+    }
+
+    $data = json_decode($response, true);
+    if (isset($data['results']) && !empty($data['results'])) {
+        return $data['results'];
+    }
+
+    return []; // Return an empty array if there are no results
+}
+function getMovieGenres()
+{
+    $apiKey = apiKey; // Replace with your TMDB API key
+    $url = "https://api.themoviedb.org/3/genre/movie/list?api_key={$apiKey}&language=en-US";
+
+    $response = file_get_contents($url);
+    if ($response === FALSE) {
+        return []; // Return an empty array in case of an error
+    }
+
+    $data = json_decode($response, true);
+    return $data['genres'] ?? []; // Return the genres or an empty array if not found
 }

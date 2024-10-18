@@ -34,3 +34,40 @@ function checkLoginStatus() {
 // Call the function to check login status when the page loads
 
 // Call the checkLoginStatus function on page load
+let currentPage = 1; // Track the current page
+
+// Function to load movies from TMDB API
+function loadMovies(page) {
+    const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
+    const url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&page=${page}`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const resultsContainer = document.getElementById('results'); // Adjust to your actual results container ID
+            data.results.forEach(movie => {
+                const movieElement = document.createElement('div');
+                movieElement.innerHTML = `<h3>${movie.title}</h3><p>${movie.overview}</p>`; // Adjust according to your structure
+                resultsContainer.appendChild(movieElement);
+            });
+            // Hide the Load More button if there are no more movies
+            if (data.page >= data.total_pages) {
+                document.getElementById('loadMoreButton').style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Error loading movies:', error));
+}
+
+// Function to handle Load More button click
+function loadMoreMovies() {
+    currentPage += 1; // Increment the page number
+    loadMovies(currentPage); // Load movies for the new page
+}
+
+// Load initial movies when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadMovies(currentPage);
+});
+
+// Event listener for Load More button
+document.getElementById('loadMoreButton').addEventListener('click', loadMoreMovies);
