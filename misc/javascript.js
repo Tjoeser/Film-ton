@@ -12,7 +12,7 @@ function getCookie(name) {
 function checkLoginStatus() {
     const loggedIn = getCookie('loggedin');
 
-    const loginButton = document.querySelector('button[name="page"][value="login"]');
+    const loginButton = document.querySelector('button[name="page"][value="account"]');
 
     if (loggedIn === 'true') {
         console.log("User is logged in.");

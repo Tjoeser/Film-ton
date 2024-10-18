@@ -163,6 +163,38 @@ function getMovieWatchProviders($movieId, $countryCode)
     return isset($data['results'][$countryCode]) ? $data['results'][$countryCode] : [];
 }
 
+function getWatchProvidersInCountry()
+{
+    $countryCode = pullSpecificAccountDataDatahandler('countrycode');
+    $apiKey = apiKey; // Replace with your actual API key
+    $url = "https://api.themoviedb.org/3/watch/providers/movie?api_key={$apiKey}&language=en-US&watch_region={$countryCode}";
+
+    // Use file_get_contents to fetch the data
+    $response = file_get_contents($url);
+
+    // Check if the response is valid
+    if ($response === FALSE) {
+        die('Error occurred while fetching watch providers.');
+    }
+
+    // Decode the JSON response into an associative array
+    $data = json_decode($response, true);
+
+    // Collect all providers in the specified country
+    $availableProviders = [];
+
+    if (isset($data['results'])) {
+        foreach ($data['results'] as $provider) {
+            // Capitalize provider names to match getMovieWatchProviders format
+            $availableProviders[] = ucfirst(strtolower($provider['provider_name']));
+        }
+    }
+
+    return $availableProviders;
+}
+
+
+
 
 function registerAccount($email, $password, $countryCode)
 {
@@ -302,35 +334,6 @@ function isOnWatchlist()
     }
 }
 
-function getWatchProvidersInCountry()
-{
-    $countryCode = pullSpecificAccountDataDatahandler('countrycode');
-    $apiKey = apiKey; // Replace with your actual API key
-    $url = "https://api.themoviedb.org/3/watch/providers/movie?api_key={$apiKey}&language=en-US&watch_region={$countryCode}";
-
-    // Use file_get_contents to fetch the data
-    $response = file_get_contents($url);
-
-    // Check if the response is valid
-    if ($response === FALSE) {
-        die('Error occurred while fetching watch providers.');
-    }
-
-    // Decode the JSON response into an associative array
-    $data = json_decode($response, true);
-
-    // Collect all providers in the specified country
-    $availableProviders = [];
-
-    if (isset($data['results'])) {
-        foreach ($data['results'] as $provider) {
-            // Make provider names lowercase
-            $availableProviders[] = strtolower($provider['provider_name']);
-        }
-    }
-
-    return $availableProviders;
-}
 
 function addStreamingServices($services){
     addStreamingServicesDatahandler($services);
@@ -365,4 +368,44 @@ function getMovieCast($movieId)
 
 function isUserLoggedIn() {
     return isset($_COOKIE['loggedin']); // or the session variable you use
+}
+
+function getActorFullDetails($actorId) {
+    // Your TMDb API key
+    $apiKey = apiKey;
+
+    // URLs for fetching actor info and movie credits
+    $actorInfoUrl = "https://api.themoviedb.org/3/person/{$actorId}?api_key={$apiKey}&language=en-US";
+    $movieCreditsUrl = "https://api.themoviedb.org/3/person/{$actorId}/movie_credits?api_key={$apiKey}&language=en-US";
+
+    // Function to fetch data from the API
+    function fetchData($url) {
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: application/json"
+            ],
+        ]);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return json_decode($response, true);
+    }
+
+    // Fetch actor info
+    $actorInfo = fetchData($actorInfoUrl);
+
+    // Fetch actor's movie credits
+    $movieCredits = fetchData($movieCreditsUrl);
+
+    // Return both actor info and movie credits
+    if (isset($actorInfo['id'])) {
+        return [
+            'actorInfo' => $actorInfo,
+            'movieCredits' => $movieCredits
+        ];
+    } else {
+        return "Error: Unable to fetch actor details";
+    }
 }

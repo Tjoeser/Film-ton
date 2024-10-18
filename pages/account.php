@@ -2,6 +2,12 @@
 // Include the functions file if necessary
 // include './functions.php'; 
 
+if (empty($_COOKIE['loggedin'])) {
+    header("Location: ?page=login");
+    exit; // It's good practice to call exit after a redirect to prevent further code execution
+}
+
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['logout'])) {
         logoutAccount();

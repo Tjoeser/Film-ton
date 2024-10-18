@@ -27,20 +27,6 @@ $fields = [
     'spoken_languages' => 'Spoken Languages',
     'poster_path' => 'Poster Path',
     'origin_country' => 'Origin Country',
-
-    // 'title' => 'Title',
-    // 'release_date' => 'Release Date',
-    // 'runtime' => 'Runtime',
-    // 'status' => 'Status',
-    // 'adult' => 'Adult Content',
-    // 'vote_average' => 'Vote Average',
-    // 'vote_count' => 'Vote Count',
-    // 'revenue' => 'Revenue',
-    // 'budget' => 'Budget',
-    // 'popularity' => 'Popularity',
-    // 'tagline' => 'Tagline',
-    // 'overview' => 'Overview',
-    // 'homepage' => 'Homepage',
 ];
 // Initialize values
 $values = [];

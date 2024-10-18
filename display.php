@@ -163,11 +163,17 @@ function movieProvidersDisplay($movieId, $countryCode)
     $ownedProvidersJson = pullSpecificAccountDataDatahandler('streaming');
     $ownedProviders = json_decode($ownedProvidersJson, true); // Decode JSON to array
 
-    // Check if decoding was successful and it's an array, if not, initialize as empty
+    // Ensure the owned providers are an array and split the comma-separated string
     if (!is_array($ownedProviders)) {
         $ownedProviders = [];
     }
 
+    // Normalize and split owned providers into an array, then convert to lowercase and trim
+    $ownedProviders = array_map(function ($provider) {
+        return strtolower(trim($provider));
+    }, explode(',', $ownedProviders[0])); // Split the string into an array
+
+    // Get movie watch providers for the current movie
     $providers = getMovieWatchProviders($movieId, $countryCode);
 
     $ownedProviderLogos = [];
@@ -177,7 +183,8 @@ function movieProvidersDisplay($movieId, $countryCode)
     if (!empty($providers['flatrate'])) {
         foreach ($providers['flatrate'] as $provider) {
             if (isset($provider['logo_path'])) {
-                $providerName = strtolower($provider['provider_name']);
+                // Normalize and trim the provider name to lowercase for comparison
+                $providerName = strtolower(trim($provider['provider_name']));
                 // Check if the provider is in the ownedProviders array
                 if (in_array($providerName, $ownedProviders)) {
                     $ownedProviderLogos[] = $provider; // Add to owned providers list
@@ -222,6 +229,7 @@ function movieProvidersDisplay($movieId, $countryCode)
         echo "</div>";
     }
 }
+
 
 
 

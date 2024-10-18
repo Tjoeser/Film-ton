@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+$live = false;
+
+if (strpos($_SERVER['HTTP_HOST'], 'thefilmton') !== false) {
+    $live = true;
+}
+define('LIVE_MODE', $live);
+?>
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Film Ton: A movie watchlist website that helps you track and find where to stream your favorite films.">
     <meta name="author" content="Thijs Rietveld">
     <meta name="keywords" content="movies, watchlist, streaming, Film Ton, cinema, films">
-    
+
     <!-- Link to Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap">
-    
+
     <!-- Link to your main CSS stylesheet -->
     <link rel="stylesheet" href="css/styling.css">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="misc/media/favicon/1/favicon.ico" type="image/x-icon">
 
-    <title>Film Ton</title>
+    <!-- Favicon -->
+    <link rel="icon" href="misc/media/png/bare_logo.png" type="image/x-icon">
+
+    <?php global $live;
+    $title = ($live === true) ? "The Film Ton" : "Film Ton"; ?>
+    <title><?php echo $title; ?></title>
 </head>
 
 
 <body>
     <header>
-        <h1>Film Ton</h1>
+        <h1> The Film Ton</h1>
+        <p class="slogan">Search, Save, Stream</p>
         <form id="nav-form">
             <button type="submit" name="page" value="home">Home</button>
             <button type="submit" name="page" value="search">Search</button>
-            <button type="submit" name="page" value="login">Login</button>
+            <button type="submit" name="page" value="account">Account</button>
         </form>
     </header>
 
@@ -35,7 +48,7 @@
     require_once 'functions.php'; // Include the functions file
     require_once 'display.php'; // Include the functions file
     require_once 'datahandler.php'; // Include the functions file
-    include 'misc/config.php';
+    include 'misc/config.php'; // Include the config file
 
 
 
@@ -55,7 +68,9 @@
             include 'pages/login.php';
         } elseif ($page === 'account') {
             include 'pages/account.php';
-        } else {
+        } elseif ($page === 'actor') {
+            include 'pages/actor.php';
+        }  else {
             include 'pages/home.php';
         }
     } else {
@@ -71,5 +86,5 @@
 <script src="misc/javascript.js"></script>
 
 <script>
-window.onload = checkLoginStatus();
+    window.onload = checkLoginStatus();
 </script>

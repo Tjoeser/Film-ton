@@ -1,39 +1,38 @@
 <body>
-    
 
-<main>
-    <h1>Home page</h1>
-    <?php
-    // pullSpecificAccountData('password');
-    // var_dump($_SESSION['account_id']);
-    // loginAccount('admin','admin');
-    // echo registerAccountDatahandler('emailtje','passwordtje','nl');
-    // echo isOnWatchlist();
-    ?>
-    <h3>Genres</h3>
 
-    <h3>Action</h3>
-    <?php getMoviesByGenre(28); ?>
+    <main>
+        <h1>Home page</h1>
+        <?php
+        // var_dump(getMovieWatchProviders("502356", "NL"));
+        // var_dump(getWatchProvidersInCountry());
 
-    <h3>Adventure</h3>
-    <?php getMoviesByGenre(12); ?>
 
-    <h3>Animation</h3>
-    <?php getMoviesByGenre(16); ?>
+        ?>
+        <h3>Genres</h3>
 
-    <h3>Comedy</h3>
-    <?php getMoviesByGenre(35); ?>
+        <h3>Action</h3>
+        <?php getMoviesByGenre(28); ?>
 
-    <h3>Crime</h3>
-    <?php getMoviesByGenre(80); ?>
+        <h3>Adventure</h3>
+        <?php getMoviesByGenre(12); ?>
 
-    <h3>Documentary</h3>
-    <?php getMoviesByGenre(99); ?>
+        <h3>Animation</h3>
+        <?php getMoviesByGenre(16); ?>
 
-    <h3>Drama</h3>
-    <?php getMoviesByGenre(18); ?>
+        <h3>Comedy</h3>
+        <?php getMoviesByGenre(35); ?>
 
-    <!-- <h3>Family</h3>
+        <h3>Crime</h3>
+        <?php getMoviesByGenre(80); ?>
+
+        <h3>Documentary</h3>
+        <?php getMoviesByGenre(99); ?>
+
+        <h3>Drama</h3>
+        <?php getMoviesByGenre(18); ?>
+
+        <!-- <h3>Family</h3>
     <?php getMoviesByGenre(10751); ?>
 
     <h3>Fantasy</h3>

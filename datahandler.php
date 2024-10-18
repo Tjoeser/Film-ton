@@ -3,11 +3,21 @@
 
 function setupDatahandlerConnection()
 {
-    $host = "localhost";
-    $dbdriver = "mysql";
-    $dbname = "film-ton";
-    $username = "root";
-    $password = "";
+    if (LIVE_MODE) {
+        $host = host_live;
+        $dbdriver = dbdriver_live;
+        $dbname = dbname_live;
+        $username = username_live;
+        $password = password_live;
+    } else {
+        $host = host;
+        $dbdriver = dbdriver;
+        $dbname = dbname;
+        $username = username;
+        $password = password;
+    }
+    
+
 
     try {
         $dbh = new PDO("$dbdriver:host=$host;dbname=$dbname", $username, $password);
