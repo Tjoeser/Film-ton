@@ -72,7 +72,60 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
                 <p id="movie-info-release_date"> <?php echo $values['release_date']; ?></p>
                 <p id="movie-info-tagline"> <?php echo $values['tagline']; ?></p>
                 <p id="movie-info-overview"><strong></strong> <?php echo $response['overview']; ?></p>
-                <p id="movie-info-p"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
+                <div class="additional-info-container">
+                    <div class="additional-info-left">
+                        <h5 class="adinfop">Info</h5>
+                        <p id="movie-info-p"><strong>Adult content:<br></strong> <?php echo $values['adult']; ?></p>
+                        <p id="movie-info-p"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
+                        <?php if ($values['origin_country'] !== 'N/A'): ?>
+                            <p id="movie-info-p"><strong>Original country:<br></strong> <?php echo $values['origin_country']; ?></p>
+                        <?php endif; ?>
+                        <p id="movie-info-p"><strong>Original language:<br></strong> <?php echo $response['original_language']; ?></p>
+                        <p id="movie-info-p"><strong>Status:<br></strong> <?php echo $response['status']; ?></p>
+                        <p id="movie-info-p"><strong>Release date:<br></strong> <?php echo $values['release_date']; ?></p>
+
+                        <!-- Add any additional info content here -->
+                    </div>
+
+                    <div class="additional-info-mid">
+                        <h5 class="adinfop">Revenue</h5>
+                        <p id="movie-info-p"><strong>Budget:<br></strong> <?php echo $values['budget']; ?></p>
+                        <p id="movie-info-p"><strong>Total revenue:<br></strong> <?php echo $values['revenue']; ?></p>
+
+                        <?php
+                        // Calculate the total difference
+                        $budgetValue = str_replace(['$', ','], '', $values['budget']); // Remove $ and commas for calculation
+                        $revenueValue = str_replace(['$', ','], '', $values['revenue']); // Remove $ and commas for calculation
+                        $difference = (float)$revenueValue - (float)$budgetValue; // Calculate the difference
+                        ?>
+
+                        <p id="movie-info-p"><strong>
+                                <?php
+                                if ($difference < 0) {
+                                    echo 'Total Loss:<br>'; // Change title for loss
+                                } else {
+                                    echo 'Total Profit:<br>'; // Change title for profit
+                                }
+                                ?>
+                            </strong>
+                            <span style="color: <?php echo $difference < 0 ? 'red' : 'green'; ?>;">
+                                <?php
+                                echo '$' . number_format(abs($difference)); // Show absolute value
+                                ?>
+                            </span>
+                        </p>
+
+
+                    </div>
+
+                    <div class="additional-info-right">
+                        <h5 class="adinfop">Review</h5>
+                        <p id="movie-info-p"><strong>Vote count:<br></strong> <?php echo $response['vote_count']; ?></p>
+                        <p id="movie-info-p"><strong>Vote average:<br></strong> <?php echo $response['vote_average']; ?></p>
+                        <p id="movie-info-p"><strong>Film-ton Rating:<br></strong> <?php echo "TBD"; ?></p>
+
+                    </div>
+                </div>
             </div>
             <div id="watchlist-form-container">
                 <div id="watchlist-form">
@@ -81,66 +134,13 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
             </div>
         </div>
 
-        <div class="additional-info-container">
-            <div class="additional-info-left">
-                <h5 class="adinfop">Info</h5>
-                <p id="movie-info-p"><strong>Adult content:<br></strong> <?php echo $values['adult']; ?></p>
-                <p id="movie-info-p"><strong>Genres:<br></strong> <?php echo $values['genres']; ?></p>
-                <?php if ($values['origin_country'] !== 'N/A'): ?>
-                    <p id="movie-info-p"><strong>Original country:<br></strong> <?php echo $values['origin_country']; ?></p>
-                <?php endif; ?>
-                <p id="movie-info-p"><strong>Original language:<br></strong> <?php echo $response['original_language']; ?></p>
-                <p id="movie-info-p"><strong>Status:<br></strong> <?php echo $response['status']; ?></p>
-                <p id="movie-info-p"><strong>Release date:<br></strong> <?php echo $values['release_date']; ?></p>
 
-                <!-- Add any additional info content here -->
-            </div>
-
-            <div class="additional-info-mid">
-                <h5 class="adinfop">Revenue</h5>
-                <p id="movie-info-p"><strong>Budget:<br></strong> <?php echo $values['budget']; ?></p>
-                <p id="movie-info-p"><strong>Total revenue:<br></strong> <?php echo $values['revenue']; ?></p>
-
-                <?php
-                // Calculate the total difference
-                $budgetValue = str_replace(['$', ','], '', $values['budget']); // Remove $ and commas for calculation
-                $revenueValue = str_replace(['$', ','], '', $values['revenue']); // Remove $ and commas for calculation
-                $difference = (float)$revenueValue - (float)$budgetValue; // Calculate the difference
-                ?>
-
-                <p id="movie-info-p"><strong>
-                        <?php
-                        if ($difference < 0) {
-                            echo 'Total Loss:<br>'; // Change title for loss
-                        } else {
-                            echo 'Total Profit:<br>'; // Change title for profit
-                        }
-                        ?>
-                    </strong>
-                    <span style="color: <?php echo $difference < 0 ? 'red' : 'green'; ?>;">
-                        <?php
-                        echo '$' . number_format(abs($difference)); // Show absolute value
-                        ?>
-                    </span>
-                </p>
-
-
-            </div>
-
-            <div class="additional-info-right">
-                <h5 class="adinfop">Review</h5>
-                <p id="movie-info-p"><strong>Vote count:<br></strong> <?php echo $response['vote_count']; ?></p>
-                <p id="movie-info-p"><strong>Vote average:<br></strong> <?php echo $response['vote_average']; ?></p>
-                <p id="movie-info-p"><strong>Film-ton Rating:<br></strong> <?php echo "TBD"; ?></p>
-
-            </div>
-        </div>
 
         <div class="cast-crew">
             <p class="adinfop">Cast and credits</p>
             <?php
             foreach ($cast as $member) {
-                echo '<a href="https://www.google.com/search?q=' . urlencode(htmlspecialchars($member['name'])) . '" class="actor">' . htmlspecialchars($member['name']) . '</a>' . ' , ';
+                echo '<a href="?page=actor&actorId=' . urlencode(htmlspecialchars($member['id'])) . '" class="actor">' . htmlspecialchars($member['name']) . '</a>' . ' , ';
                 echo '<a href="https://www.google.com/search?q=' . urlencode(htmlspecialchars($member['character'])) . '" class="character">' . htmlspecialchars($member['character']) . '</a>' . ' | ';
             }
             ?>

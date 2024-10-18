@@ -113,7 +113,7 @@ main {
     font-size: 1.2em;
 }
 
-.movie-info .highlight {
+.movie-info .highlight{
     font-size: 1.1em;
     color: var(--accent-color);
 }
@@ -176,12 +176,16 @@ footer {
     height: auto;
 }
 
-#movie-info-overview {
+#movie-info-overview, #actor-bio {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: 1.5;
     font-style: italic;
     color: var(--subtext-color);
 }
 
-.movie-details {
+.movie-details, .actor-details {
     display: flex;
     flex-direction: column; /* Stack rows vertically */
     padding: 20px;
@@ -190,7 +194,7 @@ footer {
     margin-bottom: 20px;
 }
 
-.movie-info {
+.movie-info, .actor-info {
     display: flex; /* Flexbox for the first row */
     margin-bottom: 20px; /* Space between rows */
 }
@@ -208,7 +212,7 @@ footer {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.movie-details-text {
+.movie-details-text, .actor-details-text {
     flex: 2 1 600px; /* Takes remaining space next to the poster */
 }
 
@@ -258,7 +262,7 @@ footer {
     margin: 10px 0;
 }
 
-#movie-info-title {
+#movie-info-title, #actor-name {
     display: inline-block;
     font-size: 28px;
     font-weight: bold;
@@ -273,19 +277,12 @@ footer {
     vertical-align: middle;
 }
 
-#movie-info-overview {
-    font-size: 18px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
-
 #movie-info-p {
     font-size: 16px;
     margin-bottom: 20px;
 }
 
-#movie-info-tagline {
+#movie-info-tagline, .highlight {
     color: var(--highlight-color);
     font-style: italic;
 }
@@ -425,4 +422,14 @@ a{
 
 .slogan{
     color: #6b6b6b;
+}
+
+.filmography ul .movie-grid .movie-card{
+    /* min-width: 160px; */
+    width: calc(10% - 1rem);
+
+}
+
+#actor-bio{
+    margin-right: 20px;
 }

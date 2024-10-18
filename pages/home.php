@@ -6,6 +6,7 @@
         <?php
         // var_dump(getMovieWatchProviders("502356", "NL"));
         // var_dump(getWatchProvidersInCountry());
+        // var_dump(getActorFullDetails(""));
 
 
         ?>
