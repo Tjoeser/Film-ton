@@ -662,3 +662,70 @@ a {
 #actor-bio {
     margin-right: 20px;
 }
+
+#other-search-options {
+    position: absolute;
+    background-color: var(--border-color);
+}
+
+#toggle-search-options-btn {
+    padding: 10px 15px;
+    background-color: var(--border-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+/* Fixed CSS for the toggle */
+#toggle-movie-show {
+    display: none;
+    /* Hide the default checkbox */
+}
+
+#toggle-movie-show+span {
+    display: inline-block;
+    width: 80px;
+    background-color: var(--border-color);
+    /* border-radius: 34px; */
+    position: relative;
+    /* cursor: pointer; */
+    text-align: center;
+    /* padding: 10px; */
+    /* color: white; */
+    /* transition: background-color 0.3s; */
+    padding: 10px 15px;
+    /* background-color: #ff5722; */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#toggle-movie-show:checked+span {
+    background-color: #ff5722;
+    /* Color when checked */
+}
+
+#toggle-movie-show:not(:checked)+span:after {
+}
+
+#toggle-movie-show:checked+span:after {
+    left: calc(100% - 36px);
+    /* Move the switch to the right when checked */
+}
+
+/* Optional styling for the label */
+#show_movie-filter label {
+    cursor: pointer;
+    /* Change cursor for better UX */
+}
+
+/* Highlight styling for suggestions */
+.highlighted {
+    background-color: #595959;
+    /* Change this to your preferred highlight color */
+}

@@ -19,7 +19,7 @@
 
             <!-- Toggle button for "other search options" -->
             <div class="other-search-div">
-                <button type="button" id="toggle-search-options-btn">Other Search Options ▼</button>
+                <button type="button" id="toggle-search-options-btn">Other Options ▼</button>
 
                 <!-- Other search options (Year and Genre) -->
                 <div id="other-search-options" style="display: none;">
