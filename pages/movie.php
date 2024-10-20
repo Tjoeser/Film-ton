@@ -160,7 +160,9 @@ $onWatchlist = isOnWatchlist(); // Call the function and store the boolean resul
             <div id="watchlist-form-container">
                 <div id="watchlist-form">
                 </div>
-                <?php echo movieProvidersDisplay($response['id'], pullSpecificAccountDataDatahandler("countrycode")); ?>
+                <div id="providers-div">
+                    <?php echo movieProvidersDisplay($response['id'], pullSpecificAccountDataDatahandler("countrycode")); ?>
+                </diV>
             </div>
         </div>
 

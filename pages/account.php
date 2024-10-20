@@ -158,6 +158,7 @@ if (!empty($selectedProviders)) {
             div.style.border = '1px solid #ccc';
             div.style.borderRadius = '3px';
             div.style.backgroundColor = '#e0e0e0';
+            div.style.color = '#000000';
 
             // Create a span for the provider
             const providerSpan = document.createElement('span');

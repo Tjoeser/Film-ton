@@ -1,25 +1,54 @@
 <body>
     <main id="search-page">
         <form id="movie-search-form" method="post">
-            <input type="text" name="search" id="movie-title-input" placeholder="Movie title" autocomplete="off">
-            <input type="text" name="actor" id="actor-input" placeholder="Actor name" autocomplete="off">
-            <div id="actor-suggestions-box" style="display: none;"></div> <!-- Container for actor suggestions -->
-            <input type="text" name="year" id="year-input" placeholder="Year" pattern="\d{4}" title="Please enter a valid year (4 digits)" maxlength="4" autocomplete="off">
+            <div id="show_movie-filter">
+                <label for="toggle-movie-show">
+                    <input type="checkbox" id="toggle-movie-show" checked>
+                    <span id="toggle-label">Movies</span> <!-- This will change based on the toggle state -->
+                </label>
+            </div>
 
-            <select name="genre" id="genre-dropdown">
-                <option value="">Select Genre</option>
-                <?php
-                // Fetch genres
-                $genres = getMovieGenres();
-                foreach ($genres as $genre) {
-                    echo "<option value=\"{$genre['id']}\">{$genre['name']}</option>";
-                }
-                ?>
-            </select>
+            <div>
+                <input type="text" name="search" id="movie-title-input" placeholder="Movie title" autocomplete="off">
+                <div id="suggestions-box" style="display: none;"></div> <!-- Container for suggestions -->
+            </div>
+            <div>
+                <input type="text" name="actor" id="actor-input" placeholder="Actor name" autocomplete="off">
+                <div id="actor-suggestions-box" style="display: none;"></div>
+            </div>
+
+            <!-- Toggle button for "other search options" -->
+            <div class="other-search-div">
+                <button type="button" id="toggle-search-options-btn">Other Search Options ▼</button>
+
+                <!-- Other search options (Year and Genre) -->
+                <div id="other-search-options" style="display: none;">
+                    <div>
+                        <input type="text" name="year" id="year-input" placeholder="Year" pattern="\d{4}" title="Please enter a valid year (4 digits)" maxlength="4" autocomplete="off">
+                    </div>
+                    <div>
+                        <select name="genre" id="genre-dropdown">
+                            <option value="">Select Genre</option>
+                            <?php
+                            // Fetch genres
+                            $genres = getMovieGenres();
+                            foreach ($genres as $genre) {
+                                echo "<option value=\"{$genre['id']}\">{$genre['name']}</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <button type="submit" id="search-submit-btn">Search</button>
         </form>
 
-        <div id="suggestions-box" style="display: none;"></div> <!-- Container for suggestions -->
+        <script>
+
+        </script>
+
+
 
         <?php
         $year = htmlspecialchars(trim($_POST['year'] ?? ''));
@@ -45,9 +74,9 @@
             if (isset($_POST['search'])) {
                 GetMoviesByTitle(trim($_POST['search']));
             }
-            if (isset($_POST['genre'])) {
-                getMoviesByGenre($_POST['genre'],false);
-            }
+            // if (isset($_POST['genre'])) {
+            //     getMoviesByGenre($_POST['genre'],false);
+            // }
         }
 
         ?>
@@ -61,8 +90,20 @@
     </main>
 
     <script>
+        // JavaScript to toggle the "other search options" visibility
+        document.getElementById('toggle-search-options-btn').addEventListener('click', function() {
+            const searchOptionsDiv = document.getElementById('other-search-options');
+            if (searchOptionsDiv.style.display === 'none') {
+                searchOptionsDiv.style.display = 'block';
+                this.textContent = 'Other Search Options ▲'; // Change button text when opened
+            } else {
+                searchOptionsDiv.style.display = 'none';
+                this.textContent = 'Other Search Options ▼'; // Change button text when closed
+            }
+        });
+        const apiKey = "<?php echo apiKey; ?>"; // Embed PHP constant in JavaScript
         // Populate genres from TMDB API
-        fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=YOUR_API_KEY&language=en-US')
+        fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=' + apiKey + '&language=en-US')
             .then(response => response.json())
             .then(data => {
                 const genreDropdown = document.getElementById('genre-dropdown');
@@ -206,11 +247,34 @@
                 }
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('toggle-movie-show');
+    const titleInput = document.getElementById('movie-title-input'); // Variable for the search bar
+    const toggleLabel = document.getElementById('toggle-label'); // Variable for the toggle label
+
+    function checkToggleState() {
+        if (toggle.checked) {
+            toggleLabel.textContent = 'Movies'; // Update label to Movies
+            titleInput.placeholder = 'Movie title'; // Set placeholder for movie
+            titleInput.value = ''; // Clear input value when switching to Movies
+        } else {
+            toggleLabel.textContent = 'Shows'; // Update label to Shows
+            titleInput.placeholder = 'Show title'; // Set placeholder for show
+            titleInput.value = ''; // Clear input value when switching to Shows
+        }
+    }
+
+    toggle.addEventListener('change', checkToggleState);
+
+    checkToggleState();
+});
+
     </script>
 
     <style>
         .highlighted {
-            background-color: #e0e0e0;
+            background-color: #595959;
             /* Change this to your preferred highlight color */
         }
     </style>

@@ -19,6 +19,7 @@ function GetMoviesByTitle($title)
 
     // Get movie ID from the search results
     $movieId = $data['results'][0]['id'] ?? null;
+    // var_dump($data);
 
     if ($movieId) {
         echo "<h2>" . $title . "</h2>";
@@ -522,4 +523,31 @@ function getMovieGenres()
 
     $data = json_decode($response, true);
     return $data['genres'] ?? []; // Return the genres or an empty array if not found
+}
+
+
+function GetShowsByTitle($title)
+{
+    $apiKey = apiKey; // Assuming apiKey is defined in your config.php
+    $query = urlencode($title);
+
+    // TMDb API URL for searching a TV show
+    $url = "https://api.themoviedb.org/3/search/tv?api_key={$apiKey}&query={$query}";
+
+    // Initialize CURL
+    $response = file_get_contents($url);
+
+    // Decode the JSON response into an associative array
+    $data = json_decode($response, true);
+
+    // Get TV show ID from the search results
+    $showId = $data['results'][0]['id'] ?? null;
+
+    var_dump($data);
+    if ($showId) {
+        echo "<h2>" . htmlspecialchars($title) . "</h2>"; // Output the title safely
+        searchDisplay($data); // Call your display function to handle the search results
+    } else {
+        echo "<br>No results found. Please search for something else.<br><br>";
+    }
 }

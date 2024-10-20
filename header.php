@@ -22,7 +22,8 @@ define('LIVE_MODE', $live);
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap">
 
     <!-- Link to your main CSS stylesheet -->
-    <link rel="stylesheet" href="css/styling.css">
+    <link rel="stylesheet" href="css/styling.css" media="(min-width: 769px)">
+    <link rel="stylesheet" href="css/stylingmobile.css" media="(max-width: 768px)">
 
     <!-- Favicon -->
     <link rel="icon" href="misc/media/png/bare_logo.png" type="image/x-icon">
@@ -32,10 +33,8 @@ define('LIVE_MODE', $live);
     <title><?php echo $title; ?></title>
 </head>
 
-
-<body>
-    <header>
-        <h1> The Film Ton</h1>
+<header>
+        <h1><a href="?page=home" style="text-decoration: none;">The Film Ton</a></h1>
         <p class="slogan">Search, Save, Stream</p>
         <form id="nav-form">
             <button type="submit" name="page" value="home">Home</button>
@@ -43,7 +42,7 @@ define('LIVE_MODE', $live);
             <button type="submit" name="page" value="account">Account</button>
         </form>
     </header>
-
+<body>
     <?php
     require_once 'functions.php'; // Include the functions file
     require_once 'display.php'; // Include the functions file
@@ -53,6 +52,10 @@ define('LIVE_MODE', $live);
 
     if (isset($_GET['movieId'])) {
         $movieId = $_GET['movieId']; // Get the action from the URL
+        include 'pages/movie.php';
+    }
+    if (isset($_GET['showId'])) {
+        $movieId = $_GET['showId']; // Get the action from the URL
         include 'pages/movie.php';
     }
 

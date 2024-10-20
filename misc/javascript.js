@@ -1,6 +1,4 @@
 
-
-
 // Function to get the value of a cookie by name
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -38,7 +36,7 @@ let currentPage = 1; // Track the current page
 
 // Function to load movies from TMDB API
 function loadMovies(page) {
-    const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
+    const apiKey = "<?php echo apiKey; ?>"; // Embed PHP constant in JavaScript
     const url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&page=${page}`;
 
     fetch(url)
